@@ -46,5 +46,5 @@ it('migrates prior results into fans without retroactive payments or changing ex
  const old=newCareer();delete old.club;old.fixtures[0].score=[2,0];old.round=1;const migrated=migrateCareer(old);expect(clubState(migrated).fans).toBe(1045);expect(migrated.cash).toBe(old.cash);expect(migrated.ledger).toEqual(old.ledger);expect(migrated.fixtures).toEqual(old.fixtures);expect(migrated.club!.history).toEqual([]);expect(migrateCareer(migrated)).toEqual(migrated);
 });
 it('retains club upgrades and fans across seasons without the old annual sponsor grant',()=>{
- let g:Career=upgradeFacility(newCareer(),'stadium');for(let i=0;i<42;i++)g=playRound(g);const next=nextSeason(g);expect(next.club).toEqual(g.club);expect(next.cash).toBe(g.cash);expect(next.ledger.some(t=>t.label==='Annual sponsorship')).toBe(false);
+ let g:Career=upgradeFacility(newCareer(),'stadium');for(let i=0;i<42;i++)g=playRound(g);const next=nextSeason(g);expect(next.club).toEqual(g.club);expect(next.cash).toBe(g.cash+next.competition!.history[0].prize);expect(next.ledger.some(t=>t.label==='Annual sponsorship')).toBe(false);
 });

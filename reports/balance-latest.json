@@ -1,0 +1,152 @@
+[
+  {
+    "seed": 17,
+    "season": 2026,
+    "tier": 8,
+    "cash": 36362,
+    "fans": 1778,
+    "position": 10,
+    "averageAbility": 57.9,
+    "capacity": 1200
+  },
+  {
+    "seed": 17,
+    "season": 2027,
+    "tier": 8,
+    "cash": 48960,
+    "fans": 2709,
+    "position": 8,
+    "averageAbility": 60.4,
+    "capacity": 1450
+  },
+  {
+    "seed": 17,
+    "season": 2028,
+    "tier": 8,
+    "cash": 52424,
+    "fans": 4090,
+    "position": 1,
+    "averageAbility": 60.7,
+    "capacity": 2750
+  },
+  {
+    "seed": 81,
+    "season": 2026,
+    "tier": 8,
+    "cash": 24367,
+    "fans": 1976,
+    "position": 4,
+    "averageAbility": 56.5,
+    "capacity": 1450
+  },
+  {
+    "seed": 81,
+    "season": 2027,
+    "tier": 8,
+    "cash": 34844,
+    "fans": 3023,
+    "position": 3,
+    "averageAbility": 59,
+    "capacity": 1450
+  },
+  {
+    "seed": 81,
+    "season": 2028,
+    "tier": 7,
+    "cash": 69232,
+    "fans": 3969,
+    "position": 20,
+    "averageAbility": 59.3,
+    "capacity": 4000
+  },
+  {
+    "seed": 2026,
+    "season": 2026,
+    "tier": 8,
+    "cash": 33127,
+    "fans": 2081,
+    "position": 2,
+    "averageAbility": 55.4,
+    "capacity": 1450
+  },
+  {
+    "seed": 2026,
+    "season": 2027,
+    "tier": 8,
+    "cash": 31125,
+    "fans": 3024,
+    "position": 5,
+    "averageAbility": 57.5,
+    "capacity": 1450
+  },
+  {
+    "seed": 2026,
+    "season": 2028,
+    "tier": 8,
+    "cash": 116265,
+    "fans": 4230,
+    "position": 2,
+    "averageAbility": 57.5,
+    "capacity": 2750
+  },
+  {
+    "seed": 2040,
+    "season": 2026,
+    "tier": 8,
+    "cash": 29180,
+    "fans": 1818,
+    "position": 11,
+    "averageAbility": 54.5,
+    "capacity": 1450
+  },
+  {
+    "seed": 2040,
+    "season": 2027,
+    "tier": 8,
+    "cash": 25941,
+    "fans": 2793,
+    "position": 5,
+    "averageAbility": 57.3,
+    "capacity": 1450
+  },
+  {
+    "seed": 2040,
+    "season": 2028,
+    "tier": 8,
+    "cash": 73717,
+    "fans": 4075,
+    "position": 1,
+    "averageAbility": 56.6,
+    "capacity": 2750
+  },
+  {
+    "seed": 9901,
+    "season": 2026,
+    "tier": 8,
+    "cash": 34208,
+    "fans": 1758,
+    "position": 9,
+    "averageAbility": 58,
+    "capacity": 1200
+  },
+  {
+    "seed": 9901,
+    "season": 2027,
+    "tier": 8,
+    "cash": 57285,
+    "fans": 2827,
+    "position": 2,
+    "averageAbility": 60.5,
+    "capacity": 1450
+  },
+  {
+    "seed": 9901,
+    "season": 2028,
+    "tier": 8,
+    "cash": 74911,
+    "fans": 4042,
+    "position": 1,
+    "averageAbility": 59.6,
+    "capacity": 2750
+  }
+]

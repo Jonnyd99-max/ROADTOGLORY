@@ -35,6 +35,15 @@ Full-view comparison inspected in one combined image. At native-size desktop and
 
 ## Follow-up polish
 
+### Balance and two-division promotion milestone
+
+- Isolated browser career at port 5193 played all 42 league rounds through normal controls. Both divisions and their 22-club tables updated; the club finished second with 80 points.
+- The player-controlled semifinal ended 1–2. Remaining AI ties resolved, including penalty shootouts. Saved playoff state survived reload. Collecting the £4,000 prize updated season history and moved champion/playoff-winner clubs to Tier 7, with two relegated clubs joining Tier 8. The next season's first match played successfully with the new club IDs.
+- Evidence: `../promotion-playoffs.png` and `../promotion-league.png`. The original port-5190 career was not advanced by these tests.
+- Season-panel actions explain preparation, playoff eligibility, penalty outcomes, prize collection and expiring contracts. League tabs expose both divisions; table borders mark promotion, playoff and relegation zones.
+- Forty-six tests pass, including direct promotion, playoff promotion, relegation, penalties, prize settlement, season persistence, migrated parallel results, Tier 7 revenue/wages and the five-seed/three-season balance benchmark.
+- The current two-division boundary is explicitly stated. No Tier 6/Tier 9 movement is implied. Player-profile/statistics and live-match milestones are not included in this phase.
+
 ### Fans, facilities and sponsor economy
 
 - Separate test career on port 5192 avoided spending the user's career cash. Bought all five level-one upgrades after reviewing their confirmations; cancelling an initial purchase left £75,000 unchanged. Final purchase balance £29,000 and upkeep £265 per matchweek matched the quotes.
