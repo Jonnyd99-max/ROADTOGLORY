@@ -2,6 +2,8 @@
 
 A playable, local-first football owner simulation built with React, TypeScript and Vite. No backend, accounts or paid APIs.
 
+The console-style interface follows the supplied classic LMA club-information reference: silver status framing, navy panels, cyan ability bars, home/away kits, a stadium render and bottom navigation. `src/console.css` holds the presentation skin. Generated kit and stadium raster assets are bundled for offline use. Desktop and 412 × 915 phone viewport checks are recorded in `design-qa.md`.
+
 ## Setup
 
 Install Node.js 24 and pnpm 11, then run:
