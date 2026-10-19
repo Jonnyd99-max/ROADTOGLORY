@@ -35,6 +35,16 @@ Full-view comparison inspected in one combined image. At native-size desktop and
 
 ## Follow-up polish
 
+### Fans, facilities and sponsor economy
+
+- Separate test career on port 5192 avoided spending the user's career cash. Bought all five level-one upgrades after reviewing their confirmations; cancelling an initial purchase left £75,000 unchanged. Final purchase balance £29,000 and upkeep £265 per matchweek matched the quotes.
+- Reload restored all levels and stadium capacity of 1,450.
+- First home fixture reported 963 attendees, £8,667 tickets, £529 food net sales, £433 drink net sales, £250 sponsor payment, £265 upkeep and a defeat-related loss of eight fans. Second fixture was an away win: +45 fans, £400 sponsor income, £0 tickets/concessions and £265 upkeep. Ledger reflected each item once.
+- 412 × 915 phone layout: readable metrics and purchase confirmation; no horizontal overflow (397 content pixels including scrollbar reservation). Shortened visible navigation captions preserve readable labels across eleven buttons; full accessible names remain intact.
+- Evidence: `../facilities-mobile.png` and `../facilities.png`. Main-career capture shows the unspent, migrated existing career. Upgrades were made only in the test career.
+- Thirty-five tests pass, covering fan outcomes/floor, sponsor results at home and away, attendance caps/unmet demand, concession accounting, upkeep, all upgrade limits and costs, training/recovery effects, save migration, season persistence and removal of the annual sponsor grant.
+- No remaining actionable layout or interaction findings for this scoped expansion.
+
 ### Expanded transfers and development loans
 
 - Separate test career at port 5191 kept the user's port-5190 career untouched during sales and loan testing.
