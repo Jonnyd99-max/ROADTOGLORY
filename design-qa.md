@@ -35,6 +35,14 @@ Full-view comparison inspected in one combined image. At native-size desktop and
 
 ## Follow-up polish
 
+### Inbox and growth update verification
+
+- `../mail-reader.png`: 412 × 915 phone viewport. Full welcome message visible above the dock after opening it. Read status persisted through reload; unread badge decreased by one.
+- `../player-growth.png`: default desktop browser viewport. Real saved player Jude Clarke shows original 41 in blue, current 42, a green segment and +1. Training, overview and squad share the same component.
+- New development reports contain individual rating changes. Read IDs remain stable when reports are prepended.
+- Thirteen unit tests pass, covering baseline migration, development cap, growth save/load and read-mail persistence. TypeScript and production PWA build pass. Browser console had no errors.
+- No remaining actionable layout or interaction findings for this scoped update.
+
 - P3: phone layout scrolls to the capacity and next-fixture content; desktop retains the reference's side-by-side arrangement.
 - P3: generated kits and stadium are sharper than the low-resolution reference, intentionally preserving legibility.
 
