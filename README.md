@@ -24,6 +24,14 @@ The squad is grouped GK (green), DEF (gold), MID (blue) and ATT (pink), highest 
 
 Use Transfers to submit fee, wage and contract offers. Renew players from the squad screen. Training applies each matchweek. After 42 matches, begin another season; players age, contracts expire and sponsorship pays £35,000. Renew your core players before advancing. This version stays in Tier 8; multi-tier promotion, cups, injuries and live substitutions are future work.
 
+### Transfers, sales and development loans
+
+- **Scout players:** 32 fictional players covering every position, searchable by name and position. Each new in-game calendar month produces a deterministic fresh pool; unbought listings are replaced on the first weekly advance into that month. Refreshing the browser never rerolls players. Existing careers expand automatically while preserving current listings and signed players.
+- **Sell & loan:** accept an immediate offer from a fictional club to sell a player. Cash, wage commitments, selection and inbox update immediately. Sale valuations account for ability, potential and age; purchase and sale prices differ.
+- **Loan out:** choose 4, 8 or 12 matchweeks, ending no later than the final matchweek. The host reimburses 50% of wages, rounded down, with each contribution recorded in the ledger. Full wage commitments remain reserved against the £2,600 budget for the player's return. Loaned players cannot play for Dragons or be picked by the assistant.
+- **Loan watch:** see host, return date, matchweeks played and loan-specific ability growth; recall for free at any time. Regular first-team football offers a 35% weekly growth chance under 25 and 12% otherwise, capped at potential. Players on loan receive this development instead of home training. Growth remains visible in the blue/green bars after return, with inbox progress and return reports.
+- Selling or loaning cannot leave too few available players to field the chosen formation. Recruit cover or change formation first. Players on loan must be recalled before selling. All transfers and loans save automatically.
+
 Open **Inbox**, then select **Read message** for the full message. Unread counts and read status persist with the career. New development reports name players who improve that week.
 
 Ability bars show starting ability in blue and net earned growth as a green extension, with a numeric `+N` label. Overview, squad and training use the same bar. Training lists starting/current/potential ratings. Under-25 players receive an 8% weekly growth chance (22% with Youth development), plus 6% when selected in the starting XI, capped at potential. Starting ratings and read mail migrate automatically in existing version-one saves. Older players can decline; this shortens the blue bar and shows a negative change.
@@ -40,6 +48,7 @@ Vite base is `/ROADTOGLORY/`, matching this repository. CI tests and builds push
 
 - `src/engine.ts`: pure deterministic simulation, scheduling, finance, development and negotiations. Seed defaults to 2026; each round derives a repeatable RNG from seed, season and round.
 - `src/storage.ts`: versioned IndexedDB adapter.
+- `src/market.ts`: monthly player generation, sales, loans, wage contributions and loan development/returns.
 - `src/main.tsx`: presentation and commands.
 - Tests cover fixture uniqueness and round participation, deterministic results, standings, transaction invariants, save roundtrips, manual/autosave isolation, recruitment, selection and a complete season.
 

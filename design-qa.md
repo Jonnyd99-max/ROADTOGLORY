@@ -35,6 +35,17 @@ Full-view comparison inspected in one combined image. At native-size desktop and
 
 ## Follow-up polish
 
+### Expanded transfers and development loans
+
+- Separate test career at port 5191 kept the user's port-5190 career untouched during sales and loan testing.
+- Browser: 32 scouting listings; sale accepted for Theo Dean, with cash and weekly wage commitments updated. Harry Bennett loaned for four matchweeks, excluded from selection and assistant XI, and loan contributions processed.
+- Reload restored active loan and weeks played. Four weekly advances returned Harry automatically with +2 ability and refreshed the calendar-month market from August to September. Next refresh moved to 1 October.
+- Phone viewport 412 × 915: loan watch and recall button readable, no horizontal overflow; recall completed successfully.
+- Main career screenshot: `../transfer-market.png`, desktop browser viewport. Scouting, Sell & loan and Loan watch available through the new transfer tabs.
+- During development, a hot-update duplicate-root warning was observed and fixed by retaining the existing React root across hot updates.
+- Tests cover market seed stability, refresh boundaries, legacy market migration, sale accounting, minimum squad cover, loan exclusion, exact wage contributions, deterministic capped growth, save/load, recall and end-of-season returns.
+- No remaining actionable layout or interaction findings for this scoped expansion.
+
 ### Squad grouping and assistant selection update
 
 - Evidence: `../grouped-squad.png`, default desktop browser viewport. Position group headings, player counts, colour legend and badges visible; goalkeeper and defender groups start with their highest-rated players.
