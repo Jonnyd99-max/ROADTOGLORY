@@ -35,6 +35,12 @@ Full-view comparison inspected in one combined image. At native-size desktop and
 
 ## Follow-up polish
 
+### Squad grouping and assistant selection update
+
+- Evidence: `../grouped-squad.png`, default desktop browser viewport. Position group headings, player counts, colour legend and badges visible; goalkeeper and defender groups start with their highest-rated players.
+- Assistant pick tested in browser for 4-4-2: 11 selected, correct positional counts, match button enabled. Notice confirms the chosen formation. Current ratings determine selection.
+- Twenty tests pass, including recruitment grouping, all four formations, deterministic selections, shortage handling and newly signed/grown players. TypeScript passes. Existing manual selection and growth meters retained.
+
 ### Inbox and growth update verification
 
 - `../mail-reader.png`: 412 × 915 phone viewport. Full welcome message visible above the dock after opening it. Read status persisted through reload; unread badge decreased by one.

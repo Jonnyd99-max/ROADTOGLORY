@@ -1,4 +1,18 @@
 export type Position='GK'|'DEF'|'MID'|'FWD';
+export const positionOrder:Position[]=['GK','DEF','MID','FWD'];
+export const positionLabel=(position:Position)=>position==='FWD'?'ATT':position;
+export function orderedSquad(squad:Player[]){return [...squad].sort((a,b)=>positionOrder.indexOf(a.position)-positionOrder.indexOf(b.position)||b.ability-a.ability||a.name.localeCompare(b.name)||a.id.localeCompare(b.id))}
+export function assistantPick(input:Career):Career{
+ const formation=input.formation.split('-').map(Number);
+ if(formation.length!==3||formation.some(n=>!Number.isInteger(n)||n<1)||formation.reduce((a,b)=>a+b,0)!==10)throw Error('Choose a supported formation');
+ const requirements=[1,...formation],selection:string[]=[];
+ for(const [index,pos] of positionOrder.entries()){
+  const available=orderedSquad(input.squad).filter(p=>p.position===pos);
+  if(available.length<requirements[index])throw Error(`Not enough ${positionLabel(pos)} players for ${input.formation}: need ${requirements[index]}, have ${available.length}`);
+  selection.push(...available.slice(0,requirements[index]).map(p=>p.id));
+ }
+ return {...input,selection};
+}
 export interface Player {id:string;name:string;position:Position;age:number;ability:number;startingAbility?:number;potential:number;fitness:number;wage:number;contract:number;attack:number;defence:number}
 export interface Club {id:number;name:string;strength:number}
 export interface Fixture {round:number;home:number;away:number;score?:[number,number];events?:string[]}

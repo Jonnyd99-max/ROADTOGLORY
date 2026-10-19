@@ -20,6 +20,8 @@ Open the printed URL with `/ROADTOGLORY/` appended. Production: `pnpm build`, th
 
 Start on the club overview. Open **Squad & tactics**, pick 11 players matching your formation, then **Play next match**. Every matchweek simulates all 11 fixtures, updates standings, pays wages, collects home ticket income, develops young players and adjusts fitness. Results are saved before the match report opens.
 
+The squad is grouped GK (green), DEF (gold), MID (blue) and ATT (pink), highest current ability first within each group. New signings appear in their position group. **Assistant pick** at the top of Squad & tactics selects the highest-rated available players for the chosen formation. It uses current ability, with names breaking ties; it does not weight fitness. If a position is short, it explains the shortage and retains the current XI. Manual selection remains available afterwards.
+
 Use Transfers to submit fee, wage and contract offers. Renew players from the squad screen. Training applies each matchweek. After 42 matches, begin another season; players age, contracts expire and sponsorship pays £35,000. Renew your core players before advancing. This version stays in Tier 8; multi-tier promotion, cups, injuries and live substitutions are future work.
 
 Open **Inbox**, then select **Read message** for the full message. Unread counts and read status persist with the career. New development reports name players who improve that week.
