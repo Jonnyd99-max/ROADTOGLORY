@@ -1,3 +1,4 @@
+import {recordPlayerMatch} from './playerStats';
 import {random,schedule,table,validTeam,simulateFixture,finishWeek,transact,type Career,type Club,type Fixture} from './engine';
 import {processClubMatch} from './club';
 import {refreshMarket} from './market';
@@ -44,7 +45,7 @@ export function playPlayoff(input:Career,resolved?:Fixture):Career{
  // Use the same team, fitness, finance and training model as a league week.
  g.round=stageRound;
  for(const f of p.fixtures.filter(f=>f.round===stageRound&&!f.score)){if(resolved&&f.home===resolved.home&&f.away===resolved.away){Object.assign(f,resolved);processClubMatch(g,f)}else simulateFixture(g,f,lower.clubs);resolveDraw(g,f);if(f.home===0||f.away===0)g.inbox.unshift(`Playoff ${p.stage==='semifinals'?'semifinal':'final'}\n\n${lower.clubs.find(c=>c.id===f.home)!.name} ${f.score!.join('–')} ${lower.clubs.find(c=>c.id===f.away)!.name}.${f.decidedBy?' Decided on penalties.':''}`)}
- finishWeek(g);g.round=42;g.postseasonWeeks=(g.postseasonWeeks??0)+1;advanceBracket(g);prepareFinale(g);refreshMarket(g);return g;
+ recordPlayerMatch(g,p.fixtures.find(f=>f.round===stageRound&&(f.home===0||f.away===0))!);finishWeek(g);g.round=42;g.postseasonWeeks=(g.postseasonWeeks??0)+1;advanceBracket(g);prepareFinale(g);refreshMarket(g);return g;
 }
 export function settleSeason(g:Career){
  prepareFinale(g);const comp=g.competition!;if(comp.playoffs!.stage!=='complete')throw Error('Complete your promotion playoffs first');

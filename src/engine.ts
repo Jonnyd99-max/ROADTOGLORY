@@ -1,3 +1,4 @@
+import {recordPlayerMatch} from './playerStats';
 import {division,type Tier} from './division';
 import {ensureCompetition,playOtherRound,prepareFinale,settleSeason,type Competition} from './competition';
 import {initialClub,ensureClub,processClubMatch,trainingChance,recoveryPoints,type ClubDevelopment} from './club';
@@ -17,10 +18,11 @@ export function assistantPick(input:Career):Career{
  }
  return {...input,selection};
 }
-export interface Player {id:string;name:string;position:Position;age:number;ability:number;startingAbility?:number;potential:number;fitness:number;wage:number;contract:number;attack:number;defence:number;loan?:Loan}
+export interface PlayerSeasonStats {season:number;appearances:number;starts:number;minutes:number;goals:number}
+export interface Player {stats?:PlayerSeasonStats[];id:string;name:string;position:Position;age:number;ability:number;startingAbility?:number;potential:number;fitness:number;wage:number;contract:number;attack:number;defence:number;loan?:Loan}
 export interface Club {id:number;name:string;strength:number}
 export interface Goal {minute:number;teamId:number;playerName:string;playerId?:string}
-export interface Fixture {goals?:Goal[];round:number;home:number;away:number;score?:[number,number];events?:string[];winner?:number;decidedBy?:'penalties'}
+export interface Fixture {minutes?:Record<string,number>;starters?:string[];goals?:Goal[];round:number;home:number;away:number;score?:[number,number];events?:string[];winner?:number;decidedBy?:'penalties'}
 export interface Transaction {round:number;label:string;amount:number}
 export interface Career {version:1;seed:number;season:number;round:number;cash:number;squad:Player[];market:Player[];clubs:Club[];fixtures:Fixture[];selection:string[];formation:string;tactic:string;training:string;ledger:Transaction[];inbox:string[];readMailIds?:number[];marketMonth?:string;club?:ClubDevelopment;tier?:Tier;competition?:Competition;postseasonWeeks?:number;activeMatch?:import('./match').LiveMatch}
 export function random(seed:number){let a=seed>>>0;return()=>{a+=0x6D2B79F5;let t=a;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return((t^t>>>14)>>>0)/4294967296}}
@@ -48,7 +50,7 @@ export function playRound(input:Career,resolved?:Fixture):Career{
  if(input.round>=42)throw Error('Season complete');if(!validTeam(input))throw Error('Select 11 players matching your formation');
  const g=structuredClone(input);ensureClub(g);ensureCompetition(g);
  for(const f of g.fixtures.filter(f=>f.round===g.round)){if(resolved&&f.home===resolved.home&&f.away===resolved.away){Object.assign(f,resolved);processClubMatch(g,f)}else simulateFixture(g,f);}
- playOtherRound(g);finishWeek(g);g.round++;refreshMarket(g);
+ const played=g.fixtures.find(f=>f.round===g.round&&(f.home===0||f.away===0))!;recordPlayerMatch(g,played);playOtherRound(g);finishWeek(g);g.round++;refreshMarket(g);
  if(g.round===42){prepareFinale(g);g.inbox.unshift('League season complete. Review the table and promotion playoffs before starting the next campaign.')}
  return g;
 }
