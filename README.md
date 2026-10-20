@@ -114,3 +114,6 @@ Use Play first half / Play second half for half-time decisions, or Simulate game
 
 ### Stand-by-stand stadium construction
 Facilities now includes a ground builder. Select North, East, South or West, then choose open terrace, covered terrace or seated stand and add 250, 500 or 1,000 places (or change style with no capacity increase). Preview the proposed ground and confirm to pay. The dashboard ground view reflects each stand, roof, seating and capacity. All existing paid capacity is preserved exactly. League limits remain 2,750 in Tier 8 and 5,500 in Tier 7. Quotes show added upkeep and cash remaining; extra capacity also increases running costs. Style affects build and upkeep costs, not ticket price.
+
+### Goal highlights and stadium view
+Play first half / Play second half now show animated top-down goal replays with numbered teams, passing, a shot and a flashing GOAL banner naming the actual scorer. Pause, replay, skip individual clips or return to the match. Goalless halves show a summary. Completed match reports also offer Watch goal highlights. Replays illustrate recorded goals and do not alter the outcome or charge match finances again. Reduced-motion preferences disable flashing and movement. The stadium is now shown from an angled 3D-style view, with raised terraces, seats, roofs and floodlights reflecting stand upgrades.

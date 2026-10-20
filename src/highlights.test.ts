@@ -1,0 +1,7 @@
+import {it,expect} from 'vitest';
+import {halfGoals,scoreAtGoal,ballPosition,dotPosition} from './highlights';
+import {newCareer,type Fixture} from './engine';
+import {startMatch,playHalf,finishMatch} from './match';
+it('includes goals exactly once at half boundaries and credits home/away correctly',()=>{const f:Fixture={round:0,home:3,away:0,score:[1,2],goals:[{minute:45,teamId:3,playerName:'A'},{minute:46,teamId:0,playerName:'B'},{minute:90,teamId:0,playerName:'C'}]};expect(halfGoals(f,0,45)).toHaveLength(1);expect(halfGoals(f,45,90)).toHaveLength(2);expect(f.goals!.map(g=>scoreAtGoal(f,g))).toEqual([[1,0],[1,1],[1,2]])});
+it('moves the ball between players then into the correct goal',()=>{expect(ballPosition(0,true,9)).not.toEqual(ballPosition(2,true,9));expect(ballPosition(5.2,true,9)).toEqual({x:616,y:190});expect(ballPosition(5.2,false,9)).toEqual({x:24,y:190});for(let i=0;i<11;i++){const a=dotPosition(i,true,3,true),b=dotPosition(i,false,3,true);expect(a.x+b.x).toBe(640);expect(a.y).toBe(b.y)}});
+it('building highlights never changes saved results or match settlement',()=>{let g=startMatch(newCareer(17));g=playHalf(playHalf(g));const snapshot=structuredClone(g),f=g.activeMatch!.fixture;for(const goal of f.goals!){scoreAtGoal(f,goal);for(let time=0;time<=8;time+=.1)ballPosition(time,goal.teamId===f.home,9)}expect(g).toEqual(snapshot);expect(finishMatch(g)).toEqual(finishMatch(snapshot))});
