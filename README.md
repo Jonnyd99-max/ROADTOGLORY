@@ -106,3 +106,6 @@ Vite base is `/ROADTOGLORY/`, matching this repository. CI tests and builds push
 - Tests cover fixture uniqueness and round participation, deterministic results, standings, transaction invariants, save roundtrips, manual/autosave isolation, recruitment, selection and a complete season.
 
 Cash can become negative through wages; recruitment requires available cash. Ticket income is £9 per attendee in Tier 8 and £11 in Tier 7, capped by the current stadium capacity (initially 1,200). Opponents use division-scaled strength ratings. All clubs and players are fictional. Player growth is deliberately simple in this first version.
+
+### Interactive matchday
+Play next match starts a saved match with 15-minute periods and a half-time pause. Change mentality or make up to five substitutions in the same position. Decisions change future goal chances and player fitness affects performance. Confirm the full-time result to settle the matchweek, league table and club finances. Match progress resumes automatically after reopening. Goal reports separate home and away scorers and name players; older saves retain scores but cannot recover previously unrecorded scorers. Playoff matches use the same interactive flow.

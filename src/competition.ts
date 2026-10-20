@@ -1,4 +1,5 @@
 import {random,schedule,table,validTeam,simulateFixture,finishWeek,transact,type Career,type Club,type Fixture} from './engine';
+import {processClubMatch} from './club';
 import {refreshMarket} from './market';
 import {clubState} from './club';
 import {division,tierOf,type Tier} from './division';
@@ -36,13 +37,13 @@ export function prepareFinale(g:Career){
  }
 }
 export function playoffPending(g:Career){if(g.round!==42)return false;const copy=structuredClone(g);prepareFinale(copy);return copy.competition!.playoffs!.stage!=='complete'}
-export function playPlayoff(input:Career):Career{
+export function playPlayoff(input:Career,resolved?:Fixture):Career{
  if(input.round!==42)throw Error('Finish the league season first');if(!validTeam(input))throw Error('Select 11 players matching your formation');const g=structuredClone(input);prepareFinale(g);const p=g.competition!.playoffs!;
  if(p.stage==='complete')throw Error('Playoffs complete');
  const stageRound=p.stage==='semifinals'?42:43,lower=lowerDivision(g);
  // Use the same team, fitness, finance and training model as a league week.
  g.round=stageRound;
- for(const f of p.fixtures.filter(f=>f.round===stageRound&&!f.score)){simulateFixture(g,f,lower.clubs);resolveDraw(g,f);if(f.home===0||f.away===0)g.inbox.unshift(`Playoff ${p.stage==='semifinals'?'semifinal':'final'}\n\n${lower.clubs.find(c=>c.id===f.home)!.name} ${f.score!.join('–')} ${lower.clubs.find(c=>c.id===f.away)!.name}.${f.decidedBy?' Decided on penalties.':''}`)}
+ for(const f of p.fixtures.filter(f=>f.round===stageRound&&!f.score)){if(resolved&&f.home===resolved.home&&f.away===resolved.away){Object.assign(f,resolved);processClubMatch(g,f)}else simulateFixture(g,f,lower.clubs);resolveDraw(g,f);if(f.home===0||f.away===0)g.inbox.unshift(`Playoff ${p.stage==='semifinals'?'semifinal':'final'}\n\n${lower.clubs.find(c=>c.id===f.home)!.name} ${f.score!.join('–')} ${lower.clubs.find(c=>c.id===f.away)!.name}.${f.decidedBy?' Decided on penalties.':''}`)}
  finishWeek(g);g.round=42;g.postseasonWeeks=(g.postseasonWeeks??0)+1;advanceBracket(g);prepareFinale(g);refreshMarket(g);return g;
 }
 export function settleSeason(g:Career){
