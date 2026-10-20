@@ -120,3 +120,5 @@ Play first half / Play second half now show animated top-down goal replays with 
 
 ### Fast match clock and commentary
 Each half now plays from 00:00–45:00 or 45:00–90:00 at five match minutes per real second, pausing automatically for every recorded goal. Goal clips last about 1.05 seconds (0.65 seconds of action and a 0.4-second celebration) with a short GOAL banner. One sequential playback queue handles every goal, including multiple goals in one minute. Fast cosmetic commentary uses your players and the opposition between clips. Pause/resume, replay the finished period or skip straight to the result. Playback does not alter simulation results or financial transactions.
+
+The pitch stays still between goal clips while the clock and commentary continue. Goal replays vary between through balls, wing crosses, long shots, corners, rebounds and free kicks, with different ball paths and player positions. Adjacent goals use different scenes; replaying the same match preserves the same sequences. Replay speed remains about one second per goal.
