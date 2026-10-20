@@ -9,7 +9,7 @@ it('preserves starting ratings while training and games produce visible earned g
  const grown=g.squad.filter(p=>p.ability>(p.startingAbility??p.ability));
  expect(grown.length).toBeGreaterThan(0);
  for(const p of g.squad){expect(p.startingAbility).toBe(initial.squad.find(x=>x.id===p.id)!.ability);expect(p.ability).toBeLessThanOrEqual(p.potential);const segments=abilitySegments(p);expect(segments.blue+segments.green).toBe(p.ability)}
- expect(g.inbox.some(m=>m.startsWith('Development report'))).toBe(true);
+ expect(g.inbox.some(m=>m.includes('Development report'))).toBe(true);
  await saveCareer(g,'growth');expect(await loadCareer('growth')).toEqual(g);
 });
 it('migrates old saves using original generated ratings without losing earned growth',async()=>{

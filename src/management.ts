@@ -2,8 +2,8 @@ import {random,type Career,type Player,type Fixture,type Position} from './engin
 export interface MatchRating {playerId:string;name:string;position:Position;minutes:number;goals:number;assists:number;rating:number;yellow:boolean;red:boolean;injury?:string}
 export const formRating=(p:Player)=>p.recentRatings?.length?p.recentRatings.reduce((a,b)=>a+b,0)/p.recentRatings.length:6.5;
 export const morale=(p:Player)=>p.morale??60;
-export function availability(p:Player){const statuses:string[]=[];if(p.loan)statuses.push('On loan');if(p.injury&&p.injury.weeks>0)statuses.push(`${p.injury.name} · ${p.injury.weeks} matchweek${p.injury.weeks===1?'':'s'}`);if((p.suspension??0)>0)statuses.push(`Suspended · ${p.suspension} match${p.suspension===1?'':'es'}`);return statuses.join(' · ')||'Available'}
-export const available=(p:Player)=>!p.loan&&!(p.injury&&p.injury.weeks>0)&&!(p.suspension&&p.suspension>0);
+export function availability(p:Player){const statuses:string[]=[];if(p.age<16)statuses.push('Youth only · First team from age 16');if(p.loan)statuses.push('On loan');if(p.injury&&p.injury.weeks>0)statuses.push(`${p.injury.name} · ${p.injury.weeks} matchweek${p.injury.weeks===1?'':'s'}`);if((p.suspension??0)>0)statuses.push(`Suspended · ${p.suspension} match${p.suspension===1?'':'es'}`);return statuses.join(' · ')||'Available'}
+export const available=(p:Player)=>p.age>=16&&!p.loan&&!(p.injury&&p.injury.weeks>0)&&!(p.suspension&&p.suspension>0);
 export const performanceFactor=(p:Player)=>Math.max(.9,Math.min(1.1,1+(formRating(p)-6.5)*.025+(morale(p)-60)/1000));
 export const selectionScore=(p:Player)=>p.ability*(.6+.4*p.fitness/100)*performanceFactor(p);
 const hash=(id:string)=>[...id].reduce((n,c)=>n*31+c.charCodeAt(0),7)>>>0;

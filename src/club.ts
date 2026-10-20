@@ -1,3 +1,4 @@
+import {academyUpkeep} from './academy';
 import {division,tierOf,type Tier} from './division';
 import {random,transact,type Career,type Fixture,type Player} from './engine';
 
@@ -22,7 +23,7 @@ export function initialClub(g?:Career):ClubDevelopment {
 export const clubState=(g:Career)=>g.club??initialClub(g);
 export function ensureClub(g:Career){g.club??=initialClub(g);return g.club}
 export const stadiumCapacity=(g:Career)=>stadiumStands(g).reduce((sum,s)=>sum+s.capacity,0);
-export const weeklyUpkeep=(g:Career)=>facilities.reduce((n,kind)=>n+(kind==='stadium'?(clubState(g).stadiumUpkeep??maintenance.stadium[clubState(g).facilities.stadium]):maintenance[kind][clubState(g).facilities[kind]]),0);
+export const weeklyUpkeep=(g:Career)=>facilities.reduce((n,kind)=>n+(kind==='stadium'?(clubState(g).stadiumUpkeep??maintenance.stadium[clubState(g).facilities.stadium]):maintenance[kind][clubState(g).facilities[kind]]),0)+academyUpkeep(g);
 export const clubRunningCosts=(g:Career)=>division(g).runningBase+Math.round(stadiumCapacity(g)*division(g).costPerSeat);
 export const forecastDemand=(g:Career)=>Math.round(clubState(g).fans*.82+100);
 export function stadiumAdvice(g:Career){const demand=forecastDemand(g),capacity=stadiumCapacity(g);return demand>=capacity?'Demand exceeds capacity — consider expanding.':demand>=capacity*.9?'Close to capacity — monitor your next home crowds.':'Room to grow — your current capacity covers expected demand.'}

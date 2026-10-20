@@ -29,7 +29,7 @@ export function finishMatch(input:Career):Career {
  const m=input.activeMatch;if(!m||m.minute!==90)throw Error('Play to full time first');const g=structuredClone(input);delete g.activeMatch;
  // Weekly recovery uses the actual minutes played, including substituted players.
  for(const p of g.squad){const minutes=m.minutes[p.id]??0;p.fitness-=Math.round(minutes/90*14)-(g.selection.includes(p.id)?14:0)}
- const resolved=structuredClone(m.fixture);resolved.minutes={...m.minutes};resolved.starters=[...(m.starters??input.selection)];g.tactic=m.tactic;const result=g.round<42?playRound(g,resolved):playPlayoff(g,resolved);result.inbox.unshift(`Matchday decisions\n\n${m.decisions.join('\n')||'No changes made.'}`);return result;
+ const resolved=structuredClone(m.fixture);resolved.minutes={...m.minutes};resolved.starters=[...(m.starters??input.selection)];g.tactic=m.tactic;const result=g.round<42?playRound(g,resolved):playPlayoff(g,resolved);if(m.decisions.length)result.inbox[0]+=`\n\nMatchday decisions\n${m.decisions.join('\n')}`;return result;
 }
 export function goalRecords(f:Fixture):Goal[]{if(f.goals)return f.goals;return (f.score??[0,0]).flatMap((count,side)=>Array.from({length:count},()=>({minute:0,teamId:side===0?f.home:f.away,playerName:'Scorer not recorded (older match)'})))}
 

@@ -44,7 +44,7 @@ it('loans develop deterministically and return automatically with baseline growt
  const run=()=>{let g=assistantPick(loanPlayer(start,id,12));for(let i=0;i<12;i++)g=playRound(assistantPick(g));return g};
  const result=run(),p=result.squad.find(p=>p.id===id)!;
  expect(result).toEqual(run());expect(p.loan).toBeUndefined();expect(p.ability).toBeGreaterThan(start.squad[0].ability);expect(p.ability).toBeLessThanOrEqual(p.potential);expect(p.startingAbility).toBe(start.squad[0].startingAbility);
- expect(result.ledger.filter(t=>t.label.startsWith('Loan wage'))).toHaveLength(12);expect(result.inbox.some(m=>m.startsWith('Loan completed'))).toBe(true);
+ expect(result.ledger.filter(t=>t.label.startsWith('Loan wage'))).toHaveLength(12);expect(result.inbox.some(m=>m.includes('Loan completed'))).toBe(true);
 });
 it('recalls cleanly, caps growth at potential, and finishes late-season loans before ageing',()=>{
  const start=newCareer(),id=start.squad[0].id;start.squad[0].potential=start.squad[0].ability;

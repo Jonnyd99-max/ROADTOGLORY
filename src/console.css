@@ -37,3 +37,7 @@ nav button>.nav-caption{height:auto;display:block;line-height:1.2;width:auto;fon
 .assist-credit{display:block;color:#acbdd1;margin-top:4px;font-size:10px}
 
 .transfer-tabs{flex-wrap:wrap}.transfer-tabs button{white-space:nowrap}.player-card .loan-badge{white-space:normal}
+
+.academy-add label{display:block;margin:12px 0}.academy-add input,.academy-add select{width:100%}.academy-add .controls{flex-wrap:wrap}aside nav{grid-template-columns:repeat(12,minmax(0,1fr))}@media(max-width:700px){aside nav{grid-template-columns:repeat(6,minmax(0,1fr))}}
+
+.youth-ability{display:flex!important;position:relative;width:150px;min-width:150px;height:18px;overflow:hidden;background:#414967;border:1px solid #697596;border-radius:3px}.youth-ability .ability-base,.youth-ability .ability-growth{height:100%;display:block;flex-shrink:0}.youth-ability b{position:absolute;right:5px;top:50%;transform:translateY(-50%);font-size:11px;color:white;text-shadow:0 1px 3px #000}.youth-ability+small{display:block;margin-top:5px}

@@ -30,7 +30,7 @@ function removable(g:Career,id:string){
  return p;
 }
 export function sellPlayer(input:Career,id:string):Career{
- const g=structuredClone(input),p=removable(g,id),offer=saleOffer(g,p);if(p.freeAgentSignedSeason===g.season)throw Error('Free-agent signings can be sold from next season');
+ const g=structuredClone(input),p=removable(g,id),offer=saleOffer(g,p);if(p.freeAgentSignedSeason===g.season)throw Error('Free-agent signings can be sold from next season');if(p.academyPromotedSeason===g.season)throw Error('Academy graduates can be sold from next season');
  // Sale income may reduce an overdraft without needing to clear it in one transaction.
  transact(g,`Sale: ${p.name} to ${offer.club}`,offer.fee);
  g.squad=g.squad.filter(p=>p.id!==id);g.selection=g.selection.filter(x=>x!==id);
