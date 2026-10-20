@@ -46,14 +46,14 @@ it('resolves drawn knockout matches on deterministic penalties without altering 
 });
 it('can win two player-controlled ties and earn playoff promotion and its bonus',()=>{
  let winner:Career|undefined;
- for(let seed=1;seed<=100&&!winner;seed++){let g=assistantPick(ranked(8,2));g.seed=seed;prepareFinale(g);while(playoffPending(g))g=playPlayoff(g);if(g.competition!.playoffs!.winner===0)winner=g}
+ for(let seed=1;seed<=100&&!winner;seed++){let g=assistantPick(ranked(8,2));g.seed=seed;prepareFinale(g);while(playoffPending(g))g=playPlayoff(assistantPick(g));if(g.competition!.playoffs!.winner===0)winner=g}
  expect(winner).toBeDefined();expect(winner!.postseasonWeeks).toBe(2);const next=nextSeason(winner!);expect(tierOf(next)).toBe(7);expect(next.competition!.history[0]).toMatchObject({position:2,outcome:'Promoted',prize:12000});
 });
 it('applies Tier 7 sponsorship, ticket prices, running costs and fan growth to the ledger',()=>{
  const g=ranked(7,1);g.round=0;processClubMatch(g,{round:0,home:0,away:g.clubs[1].id,score:[2,0]});const report=g.club!.history[0];expect(report.sponsorBase+report.sponsorBonus).toBe(850);expect(g.ledger.filter(t=>t.label.includes('Manchester Trade')).reduce((n,t)=>n+t.amount,0)).toBe(850);expect(report.tickets).toBe(report.attendance*11);expect(report.fansAfter-report.fansBefore).toBe(60);expect(report.runningCosts).toBe(2200);expect(report.matchCosts).toBe(Math.round(report.attendance*3.2));expect(g.cash).toBe(75000+g.ledger.reduce((n,t)=>n+t.amount,0));
 });
 it('migrates unseen division results without changing existing fixtures or cash',()=>{
- let g=newCareer();for(let i=0;i<5;i++)g=playRound(g);delete g.competition;delete g.tier;delete g.postseasonWeeks;
+ let g=newCareer();for(let i=0;i<5;i++)g=playRound(assistantPick(g));delete g.competition;delete g.tier;delete g.postseasonWeeks;
  const migrated=migrateCareer(g);expect(migrated.fixtures).toEqual(g.fixtures);expect(migrated.cash).toBe(g.cash);expect(migrated.ledger).toEqual(g.ledger);expect(otherTable(migrated).every(c=>c.played===5)).toBe(true);expect(migrateCareer(migrated)).toEqual(migrated);
 });
 it('unlocks larger grounds in Tier 7 without resizing existing stands on relegation',()=>{

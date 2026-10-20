@@ -9,8 +9,8 @@ it('generates a repeatable 32-player monthly market across every position',()=>{
  expect(new Set(g.market.map(p=>p.id)).size).toBe(32);expect(new Set(g.market.map(p=>p.name)).size).toBe(32);
  expect(new Set(g.market.map(p=>p.position)).size).toBe(4);
  expect(monthlyMarket({...g,seed:42})).not.toEqual(g.market);
- let next=g;for(let i=0;i<3;i++)next=playRound(next);expect(next.market).toEqual(g.market);
- next=playRound(next);expect(gameMonth(next)).toBe('2026-09');expect(next.market).toHaveLength(32);
+ let next=g;for(let i=0;i<3;i++)next=playRound(assistantPick(next));expect(next.market).toEqual(g.market);
+ next=playRound(assistantPick(next));expect(gameMonth(next)).toBe('2026-09');expect(next.market).toHaveLength(32);
  expect(next.market.every(p=>!g.market.some(old=>old.id===p.id))).toBe(true);
  const snapshot=structuredClone(next);refreshMarket(next);expect(next).toEqual(snapshot);
 });
@@ -41,14 +41,14 @@ it('loans exclude players from selection and assistant picks and pay exactly hal
 });
 it('loans develop deterministically and return automatically with baseline growth preserved',()=>{
  const start=newCareer(),id=start.squad[0].id;start.squad[0].age=18;start.squad[0].potential=90;
- const run=()=>{let g=assistantPick(loanPlayer(start,id,12));for(let i=0;i<12;i++)g=playRound(g);return g};
+ const run=()=>{let g=assistantPick(loanPlayer(start,id,12));for(let i=0;i<12;i++)g=playRound(assistantPick(g));return g};
  const result=run(),p=result.squad.find(p=>p.id===id)!;
  expect(result).toEqual(run());expect(p.loan).toBeUndefined();expect(p.ability).toBeGreaterThan(start.squad[0].ability);expect(p.ability).toBeLessThanOrEqual(p.potential);expect(p.startingAbility).toBe(start.squad[0].startingAbility);
  expect(result.ledger.filter(t=>t.label.startsWith('Loan wage'))).toHaveLength(12);expect(result.inbox.some(m=>m.startsWith('Loan completed'))).toBe(true);
 });
 it('recalls cleanly, caps growth at potential, and finishes late-season loans before ageing',()=>{
  const start=newCareer(),id=start.squad[0].id;start.squad[0].potential=start.squad[0].ability;
- let g=assistantPick(loanPlayer(start,id,8));g=playRound(g);expect(g.squad[0].ability).toBe(start.squad[0].ability);
+ let g=assistantPick(loanPlayer(start,id,8));g=playRound(assistantPick(g));expect(g.squad[0].ability).toBe(start.squad[0].ability);
  g=recallPlayer(g,id);expect(g.squad[0].loan).toBeUndefined();expect(()=>recallPlayer(g,id)).toThrow('not on loan');
  const after=playRound(g);expect(after.ledger.filter(t=>t.label.startsWith('Loan wage'))).toHaveLength(1);
  let late={...newCareer(),round:40};late=assistantPick(loanPlayer(late,id,12));expect(late.squad[0].loan!.returnRound).toBe(42);

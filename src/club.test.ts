@@ -1,6 +1,6 @@
 import {it,expect} from 'vitest';
 import 'fake-indexeddb/auto';
-import {newCareer,playRound,migrateCareer,nextSeason,type Career} from './engine';
+import {assistantPick,newCareer,playRound,migrateCareer,nextSeason,type Career} from './engine';
 import {clubState,processClubMatch,upgradeFacility,stadiumCapacity,trainingChance,recoveryPoints,weeklyUpkeep,facilities,upgradeQuote} from './club';
 import {saveCareer,loadCareer} from './storage';
 
@@ -39,12 +39,12 @@ it('training improves the real development probability and recovery improves act
  const base=playRound(g),better=playRound(recovered);for(const p of base.squad)expect(better.squad.find(x=>x.id===p.id)!.fitness).toBe(p.fitness+3);
 });
 it('applies facilities, fan and sponsor effects once in the saved match loop',async()=>{
- let g=upgradeFacility(upgradeFacility(newCareer(),'food'),'training');g=playRound(g);expect(g.club!.history).toHaveLength(1);expect(g.cash).toBe(75000+g.ledger.reduce((sum,t)=>sum+t.amount,0));
+ let g=upgradeFacility(upgradeFacility(newCareer(),'food'),'training');g=playRound(assistantPick(g));expect(g.club!.history).toHaveLength(1);expect(g.cash).toBe(75000+g.ledger.reduce((sum,t)=>sum+t.amount,0));
  expect(g.ledger.filter(t=>t.label==='Facilities upkeep')).toHaveLength(1);await saveCareer(g,'club');expect(await loadCareer('club')).toEqual(g);
 });
 it('migrates prior results into fans without retroactive payments or changing existing progress',()=>{
  const old=newCareer();delete old.club;old.fixtures[0].score=[2,0];old.round=1;const migrated=migrateCareer(old);expect(clubState(migrated).fans).toBe(1045);expect(migrated.cash).toBe(old.cash);expect(migrated.ledger).toEqual(old.ledger);expect(migrated.fixtures).toEqual(old.fixtures);expect(migrated.club!.history).toEqual([]);expect(migrateCareer(migrated)).toEqual(migrated);
 });
 it('retains club upgrades and fans across seasons without the old annual sponsor grant',()=>{
- let g:Career=upgradeFacility(newCareer(),'stadium');for(let i=0;i<42;i++)g=playRound(g);const next=nextSeason(g);expect(next.club).toEqual(g.club);expect(next.cash).toBe(g.cash+next.competition!.history[0].prize);expect(next.ledger.some(t=>t.label==='Annual sponsorship')).toBe(false);
+ let g:Career=upgradeFacility(newCareer(),'stadium');for(let i=0;i<42;i++)g=playRound(assistantPick(g));const next=nextSeason(g);expect(next.club).toEqual(g.club);expect(next.cash).toBe(g.cash+next.competition!.history[0].prize);expect(next.ledger.some(t=>t.label==='Annual sponsorship')).toBe(false);
 });

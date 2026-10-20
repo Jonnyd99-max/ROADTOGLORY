@@ -17,7 +17,7 @@ it('reports shortages without changing the current XI',()=>{
  const g=newCareer();g.squad=g.squad.filter(p=>p.position!=='GK');const selection=[...g.selection];expect(()=>assistantPick(g)).toThrow('Not enough GK');expect(g.selection).toEqual(selection);
  expect(()=>assistantPick({...newCareer(),formation:'invalid'})).toThrow('supported formation');
 });
-it('uses current rating, including growth and new arrivals, rather than fitness',()=>{
+it('values current ability and new arrivals while balancing readiness',()=>{
  const g=newCareer(),keepers=g.squad.filter(p=>p.position==='GK');keepers[0].ability=99;keepers[0].fitness=35;expect(assistantPick(g).selection).toContain(keepers[0].id);
  const p={...g.market.find(p=>p.position==='DEF')!,ability:98};g.squad.push(p);expect(assistantPick(g).selection).toContain(p.id);
 });

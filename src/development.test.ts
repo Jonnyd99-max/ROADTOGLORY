@@ -1,11 +1,11 @@
 import {it,expect} from 'vitest';
 import 'fake-indexeddb/auto';
-import {abilitySegments,newCareer,playRound,migrateCareer,mailId,markMailRead,unreadCount} from './engine';
+import {assistantPick,abilitySegments,newCareer,playRound,migrateCareer,mailId,markMailRead,unreadCount} from './engine';
 import {saveCareer,loadCareer} from './storage';
 
 it('preserves starting ratings while training and games produce visible earned growth',async()=>{
  const initial=newCareer(2026);let g={...initial,training:'Youth development'};
- for(let i=0;i<20;i++)g=playRound(g);
+ for(let i=0;i<20;i++)g=playRound(assistantPick(g));
  const grown=g.squad.filter(p=>p.ability>(p.startingAbility??p.ability));
  expect(grown.length).toBeGreaterThan(0);
  for(const p of g.squad){expect(p.startingAbility).toBe(initial.squad.find(x=>x.id===p.id)!.ability);expect(p.ability).toBeLessThanOrEqual(p.potential);const segments=abilitySegments(p);expect(segments.blue+segments.green).toBe(p.ability)}
@@ -13,7 +13,7 @@ it('preserves starting ratings while training and games produce visible earned g
  await saveCareer(g,'growth');expect(await loadCareer('growth')).toEqual(g);
 });
 it('migrates old saves using original generated ratings without losing earned growth',async()=>{
- const initial=newCareer();let old=newCareer();for(let i=0;i<20;i++)old=playRound(old);
+ const initial=newCareer();let old=newCareer();for(let i=0;i<20;i++)old=playRound(assistantPick(old));
  for(const p of [...old.squad,...old.market])delete p.startingAbility;
  delete old.readMailIds;
  const migrated=migrateCareer(old);

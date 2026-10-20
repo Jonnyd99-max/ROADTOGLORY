@@ -5,13 +5,14 @@ import {playoffPending,playPlayoff} from './competition';
 import {clubState,upgradeFacility,forecastDemand,stadiumCapacity} from './club';
 
 // Controlled benchmark: fixed squad, no trading, no expired contracts.
-// This isolates match income, operating costs, development and facilities.
+// Form/morale are held neutral to isolate economy; availability and rotation remain active.
 it('runs repeatable three-season economy benchmarks',()=>{
  const samples=[];
  for(const seed of [17,81,2026,2040,9901]){
   let g:Career=newCareer(seed);g.training='Youth development';g.squad.forEach(p=>p.contract=10);
   for(let season=0;season<3;season++){
    for(let week=0;week<42;week++){
+    for(const p of g.squad){p.morale=60;p.recentRatings=[]}
     for(const kind of ['recovery','food','drink','training','stadium'] as const){
      if(kind==='stadium'&&forecastDemand(g)<stadiumCapacity(g))continue;
      try{const upgraded=upgradeFacility(g,kind);if(upgraded.cash>=25000)g=upgraded}catch{/* retain a cash reserve */}

@@ -1,3 +1,4 @@
+import {available} from './management';
 import {tierOf,division} from './division';
 import {assistantPick,random,transact,type Career,type Player} from './engine';
 
@@ -39,7 +40,7 @@ export function sellPlayer(input:Career,id:string):Career{
 export function loanPlayer(input:Career,id:string,weeks:number):Career{
  if(![4,8,12].includes(weeks))throw Error('Choose a 4, 8 or 12 week loan');
  if(input.round>=42)throw Error('Begin the next season before arranging a loan');
- const g=structuredClone(input),p=removable(g,id),duration=Math.min(weeks,42-g.round);
+ const g=structuredClone(input),p=removable(g,id);if(!available(p))throw Error('Player must be fit and free of suspension before a development loan');const duration=Math.min(weeks,42-g.round);
  p.loan={club:partner(g,p),startRound:g.round,returnRound:g.round+duration,startingAbility:p.ability,weeksPlayed:0,wageShare:50};
  g.selection=g.selection.filter(x=>x!==id);
  g.inbox.unshift(`Development loan Â· ${p.name}\n\n${p.name} joins ${p.loan.club} for ${duration} matchweeks, returning after matchweek ${p.loan.returnRound}. The host pays 50% of his Â£${p.wage} weekly wage. He will gain first-team experience, with a 35% weekly ability-growth chance if under 25 (12% otherwise), up to his potential. You can recall him at any time. His full wage remains reserved within the Â£${division(g).wageBudget.toLocaleString('en-GB')} budget for his return.`);
