@@ -3,7 +3,10 @@ import {random,transact,type Career,type Fixture,type Player} from './engine';
 
 export type FacilityKind='stadium'|'training'|'recovery'|'food'|'drink';
 export interface MatchdayReport {season:number;round:number;home:boolean;result:'win'|'draw'|'loss';fansBefore:number;fansAfter:number;capacity:number;demand:number;attendance:number;turnedAway:number;tickets:number;food:number;drink:number;sponsorBase:number;sponsorBonus:number;upkeep:number;runningCosts?:number;matchCosts?:number;ticketPrice?:number;tier?:Tier}
-export interface ClubDevelopment {fans:number;facilities:Record<FacilityKind,number>;history:MatchdayReport[]}
+export type StandSide='North'|'East'|'South'|'West';
+export type StandStyle='Open terrace'|'Covered terrace'|'Seated stand';
+export interface StadiumStand {side:StandSide;capacity:number;style:StandStyle}
+export interface ClubDevelopment {stands?:StadiumStand[];stadiumUpkeep?:number;fans:number;facilities:Record<FacilityKind,number>;history:MatchdayReport[]}
 export const facilities:FacilityKind[]=['stadium','training','recovery','food','drink'];
 export const facilityNames:Record<FacilityKind,string>={stadium:'Stadium expansion',training:'Training facilities',recovery:'Recovery facilities',food:'Food concession',drink:'Drink concession'};
 const costs:Record<FacilityKind,number[]>={stadium:[15000,30000,55000,90000,140000],training:[12000,24000,40000],recovery:[8000,16000,30000],food:[6000,12000,22000],drink:[5000,10000,18000]};
@@ -18,8 +21,8 @@ export function initialClub(g?:Career):ClubDevelopment {
 }
 export const clubState=(g:Career)=>g.club??initialClub(g);
 export function ensureClub(g:Career){g.club??=initialClub(g);return g.club}
-export const stadiumCapacity=(g:Career)=>[1200,1450,1950,2750,4000,5500][clubState(g).facilities.stadium];
-export const weeklyUpkeep=(g:Career)=>facilities.reduce((n,kind)=>n+maintenance[kind][clubState(g).facilities[kind]],0);
+export const stadiumCapacity=(g:Career)=>stadiumStands(g).reduce((sum,s)=>sum+s.capacity,0);
+export const weeklyUpkeep=(g:Career)=>facilities.reduce((n,kind)=>n+(kind==='stadium'?(clubState(g).stadiumUpkeep??maintenance.stadium[clubState(g).facilities.stadium]):maintenance[kind][clubState(g).facilities[kind]]),0);
 export const clubRunningCosts=(g:Career)=>division(g).runningBase+Math.round(stadiumCapacity(g)*division(g).costPerSeat);
 export const forecastDemand=(g:Career)=>Math.round(clubState(g).fans*.82+100);
 export function stadiumAdvice(g:Career){const demand=forecastDemand(g),capacity=stadiumCapacity(g);return demand>=capacity?'Demand exceeds capacity — consider expanding.':demand>=capacity*.9?'Close to capacity — monitor your next home crowds.':'Room to grow — your current capacity covers expected demand.'}
@@ -27,7 +30,7 @@ export function trainingChance(g:Career,p:Player){return p.loan||p.age>=25||p.ab
 export const recoveryPoints=(g:Career)=>(g.training==='Recovery'?18:10)+clubState(g).facilities.recovery*3;
 export function upgradeQuote(g:Career,kind:FacilityKind){if(!facilities.includes(kind))throw Error('Unknown facility');const level=clubState(g).facilities[kind];const maxLevel=kind==='stadium'&&tierOf(g)===7?5:3;return{level,maxLevel,maxed:level>=maxLevel,cost:costs[kind][level]??0,currentUpkeep:maintenance[kind][level],nextUpkeep:maintenance[kind][Math.min(maintenance[kind].length-1,level+1)]}}
 export function facilityEffect(g:Career,kind:FacilityKind,next=false){const level=Math.min(kind==='stadium'?5:3,clubState(g).facilities[kind]+(next?1:0));if(kind==='stadium')return`${[1200,1450,1950,2750,4000,5500][level].toLocaleString('en-GB')} capacity`;if(kind==='training')return`+${level*4} percentage points to home development chance`;if(kind==='recovery')return`+${level*3} fitness restored each matchweek`;if(kind==='food')return`£${[0,.55,.9,1.25][level].toFixed(2)} net per home attendee`;return`£${[0,.45,.75,1.05][level].toFixed(2)} net per home attendee`}
-export function upgradeFacility(input:Career,kind:FacilityKind):Career{const g=structuredClone(input),state=ensureClub(g),quote=upgradeQuote(g,kind);if(quote.maxed)throw Error('Facility is already fully upgraded');transact(g,`${facilityNames[kind]} · Level ${quote.level+1}`,-quote.cost);state.facilities[kind]++;g.inbox.unshift(`Facility upgraded · ${facilityNames[kind]}\n\nLevel ${state.facilities[kind]} is now operational. ${facilityEffect(g,kind)}. Purchase cost: £${quote.cost.toLocaleString('en-GB')}. Total upkeep for this facility is now £${quote.nextUpkeep} per matchweek.`);return g}
+export function upgradeFacility(input:Career,kind:FacilityKind):Career{if(kind==='stadium'&&input.club?.stands)throw Error('Use the stand-by-stand stadium builder');const g=structuredClone(input),state=ensureClub(g),quote=upgradeQuote(g,kind);if(quote.maxed)throw Error('Facility is already fully upgraded');transact(g,`${facilityNames[kind]} · Level ${quote.level+1}`,-quote.cost);state.facilities[kind]++;if(kind==='stadium'){delete state.stands;delete state.stadiumUpkeep;}g.inbox.unshift(`Facility upgraded · ${facilityNames[kind]}\n\nLevel ${state.facilities[kind]} is now operational. ${facilityEffect(g,kind)}. Purchase cost: £${quote.cost.toLocaleString('en-GB')}. Total upkeep for this facility is now £${quote.nextUpkeep} per matchweek.`);return g}
 /** Apply once for the club's completed fixture, independently of match RNG. */
 export function processClubMatch(g:Career,f:Fixture){
  if(!f.score||(f.home!==0&&f.away!==0))throw Error('Completed Dragons fixture required');
@@ -46,3 +49,27 @@ export function processClubMatch(g:Career,f:Fixture){
 }
 
 
+
+export const standSides:StandSide[]=['North','East','South','West'];
+export const standStyles:StandStyle[]=['Open terrace','Covered terrace','Seated stand'];
+/** Older saves keep every paid-for place; distribute remainder seats without rounding loss. */
+export function stadiumStands(g:Career):StadiumStand[]{const state=clubState(g);if(state.stands)return state.stands;const total=[1200,1450,1950,2750,4000,5500][state.facilities.stadium];return standSides.map((side,i)=>({side,capacity:Math.floor(total/4)+(i<total%4?1:0),style:i===3?'Seated stand':i===0?'Covered terrace':'Open terrace'}))}
+export function standQuote(g:Career,side:StandSide,style:StandStyle,extra:number){
+ if(!standSides.includes(side)||!standStyles.includes(style)||![0,250,500,1000].includes(extra))throw Error('Choose a valid stand design');
+ const stand=stadiumStands(g).find(s=>s.side===side)!;const currentRank=standStyles.indexOf(stand.style),rank=standStyles.indexOf(style);
+ if(rank<currentRank)throw Error('Choose the current style or a better stand');
+ if(!extra&&rank===currentRank)throw Error('Choose added capacity or a new style');
+ const maximum=tierOf(g)===7?5500:2750;
+ if(extra>0&&stadiumCapacity(g)+extra>maximum)throw Error(`Tier ${tierOf(g)} ground limit is ${maximum.toLocaleString('en-GB')} places`);
+ const rates=[40,60,90],cost=extra*rates[rank]+stand.capacity*(rates[rank]-rates[currentRank]);
+ const extraUpkeep=Math.ceil(extra*.12+(stand.capacity+extra)*rank*.035-stand.capacity*currentRank*.035);
+ return{cost,extraUpkeep,capacity:stand.capacity+extra,total:stadiumCapacity(g)+extra,maximum};
+}
+export function upgradeStand(input:Career,side:StandSide,style:StandStyle,extra:number):Career{
+ if(input.activeMatch)throw Error('Finish the match before starting construction');
+ const quote=standQuote(input,side,style,extra),g=structuredClone(input),state=ensureClub(g);
+ state.stands=structuredClone(stadiumStands(g));state.stadiumUpkeep??=maintenance.stadium[state.facilities.stadium];
+ transact(g,`${side} stand · ${style} · +${extra} places`,-quote.cost);
+ Object.assign(state.stands.find(s=>s.side===side)!,{style,capacity:quote.capacity});state.stadiumUpkeep+=quote.extraUpkeep;
+ g.inbox.unshift(`Dragon’s Den · ${side} stand completed\n\n${style}: ${quote.capacity.toLocaleString('en-GB')} places. Total stadium capacity: ${quote.total.toLocaleString('en-GB')}. Cost: £${quote.cost.toLocaleString('en-GB')}. Additional upkeep: £${quote.extraUpkeep} per matchweek.`);return g;
+}
