@@ -35,3 +35,5 @@ nav button>.nav-caption{height:auto;display:block;line-height:1.2;width:auto;fon
 .player-condition{min-width:130px;font-size:12px;margin:6px 0}.player-condition small{display:block;color:#aab8ce;margin-top:5px}.assistant-report{margin-bottom:20px}.assistant-report ul{padding-left:20px;line-height:1.7}.assistant-report details{margin-top:12px}.assistant-report summary{cursor:pointer;color:#ebd58e}.recent-form{display:flex;gap:8px;flex-wrap:wrap}.recent-form span{padding:8px 12px;border:1px solid #5c6b8b;border-radius:6px;background:#151e35}.match-ratings{margin:20px 0;background:#18243b}.match-ratings .panel-title{flex-wrap:wrap}.player-profile{width:min(880px,95vw)}
 
 .assist-credit{display:block;color:#acbdd1;margin-top:4px;font-size:10px}
+
+.transfer-tabs{flex-wrap:wrap}.transfer-tabs button{white-space:nowrap}.player-card .loan-badge{white-space:normal}

@@ -25,12 +25,12 @@ const partners=['Salford Vale FC','Peak District Town','Rochdale Park','Lancaste
 function partner(g:Career,p:Player){const hash=[...p.id].reduce((n,c)=>n+c.charCodeAt(0),g.seed);return partners[Math.abs(hash)%partners.length]}
 export function saleOffer(g:Career,p:Player){return{club:partner(g,p),fee:Math.round((p.ability*75+Math.max(0,p.potential-p.ability)*20)*(p.age<24?1.15:p.age>30?.8:1))}}
 function removable(g:Career,id:string){
- const p=g.squad.find(p=>p.id===id);if(!p)throw Error('Player unavailable');if(p.loan)throw Error('Recall this player from loan first');
+ const p=g.squad.find(p=>p.id===id);if(!p)throw Error('Player unavailable');if(p.loanIn)throw Error('Borrowed players cannot be sold or loaned out');if(p.loan)throw Error('Recall this player from loan first');
  try{assistantPick({...g,squad:g.squad.filter(p=>p.id!==id)})}catch{throw Error(`Keep enough available players to field ${g.formation}. Recruit cover or change formation first.`)}
  return p;
 }
 export function sellPlayer(input:Career,id:string):Career{
- const g=structuredClone(input),p=removable(g,id),offer=saleOffer(g,p);
+ const g=structuredClone(input),p=removable(g,id),offer=saleOffer(g,p);if(p.freeAgentSignedSeason===g.season)throw Error('Free-agent signings can be sold from next season');
  // Sale income may reduce an overdraft without needing to clear it in one transaction.
  transact(g,`Sale: ${p.name} to ${offer.club}`,offer.fee);
  g.squad=g.squad.filter(p=>p.id!==id);g.selection=g.selection.filter(x=>x!==id);
