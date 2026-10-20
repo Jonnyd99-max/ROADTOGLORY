@@ -6,7 +6,7 @@ export function GoalReplayButton({career,fixture}:{career:Career;fixture:Fixture
 export function GoalHighlights({career:g,fixture:f,onClose,from=0,to=90}:{career:Career;fixture:Fixture;onClose:()=>void;from?:number;to?:number}){
  const [state,setState]=useState(()=>beginPlayback(from)),[playing,setPlaying]=useState(true),[reduced]=useState(()=>window.matchMedia('(prefers-reduced-motion: reduce)').matches);
  const goals=playbackGoals(f,from,to),goal=state.phase==='goal'?goals[state.nextGoal]:undefined,time=goal?Math.min(5.2,state.elapsed/SHOT_TIME*5.2):0,scoringHome=goal?.teamId===f.home,goalMoment=!!goal&&state.elapsed>=SHOT_TIME;
- useEffect(()=>{if(!playing||state.phase==='complete')return;const timer=window.setInterval(()=>setState(s=>tickPlayback(s,playbackGoals(f,from,to),to,.05)),50);return()=>window.clearInterval(timer)},[playing,f,from,to,state.phase]);
+ useEffect(()=>{if(!playing||state.phase==='complete')return;let last=performance.now();const timer=window.setInterval(()=>{const now=performance.now(),delta=Math.min(.1,(now-last)/1000);last=now;setState(s=>tickPlayback(s,playbackGoals(f,from,to),to,delta))},16);return()=>window.clearInterval(timer)},[playing,f,from,to,state.phase]);
  const clockLabel=`${Math.floor(state.second/60).toString().padStart(2,'0')}:${Math.floor(state.second%60).toString().padStart(2,'0')}`;
  const commentary=Array.from({length:Math.min(5,Math.floor((state.second-from*60)/90)+1)},(_,i)=>{const second=Math.max(from*60,Math.floor(state.second/90)*90-i*90);return{second,text:commentaryLine(g,f,second)}});
  const ours=f.home===0,homeColor=ours?'#bd2845':'#287dc5',awayColor=ours?'#287dc5':'#bd2845';

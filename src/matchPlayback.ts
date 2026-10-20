@@ -1,7 +1,7 @@
 import {clubById,opponentName,type Career,type Fixture,type Goal} from './engine';
 export const MATCH_PACE=300; // Five match minutes per second between highlights.
-export const SHOT_TIME=1.35;
-export const CLIP_TIME=2.1;
+export const SHOT_TIME=.65;
+export const CLIP_TIME=1.05;
 export interface Playback {second:number;phase:'running'|'goal'|'complete';nextGoal:number;elapsed:number;shown:number}
 export function playbackGoals(f:Fixture,from:number,to:number){return (f.goals??[]).filter(g=>g.minute>from&&g.minute<=to).sort((a,b)=>a.minute-b.minute)}
 export function beginPlayback(from:number):Playback{return{second:from*60,phase:'running',nextGoal:0,elapsed:0,shown:0}}
