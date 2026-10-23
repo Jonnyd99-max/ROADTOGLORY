@@ -150,3 +150,15 @@ Paid signings, free agents and contract renewals support a one-off family holida
 Outfield fatigue for a full match is 24 points at ages 16–21, 27 at 22–27, 31 at 28–31, 35 at 32–35 and 39 at 36+. Goalkeepers take 60% of that fatigue, rounded. Fatigue is proportional to actual minutes, including substitutes; in-match condition and half-time displays use the same model. Weekly recovery is the existing training/recovery-facility amount, adjusted by +2 / 0 / −2 / −4 / −6 across those age bands, with a minimum of 4 points. Recovery facilities remain +3 per level, and Recovery training remains available. Players can rest to recover without match fatigue. Fitness stays bounded; no old results, upgrades or current fitness are retrospectively changed.
 
 Assistant selection mode persists in the career. All modes respect formation and availability. Rating, Fitness and Form sort by the chosen measure; Balanced uses the weights above. Starting a match, advancing halves and finishing a simulation return the page to the top. The full-time score now precedes the commercial report, so it is visible first.
+
+### Version 0.4.0: club identity studio and 99 potential
+
+New careers open the club identity studio before play; use the defaults or save a custom design. Existing careers continue normally and can open **Customise club** from Overview or Career at any time outside an active match.
+
+Choose Shield, Circle or Diamond crest shapes and one of six original preset symbols: Dragon, Lion, Eagle, Football, Star or Castle. Set badge initials, primary/secondary/trim colours, or choose a palette. Home and away kits each support Plain, Stripes, Hoops, Sash and Halves patterns, with separate away colours. All previews and saved designs are local SVG, work offline and require no uploads or image services.
+
+Club name, commentary short name, stadium name and training facilities name are editable. Changes retain club ID, squad, standings, results, finances and facility levels; historical correspondence stays unchanged. New names appear in the league table, headers, player profiles, stadium builder, training screen and future commentary. Personalising a club is free. Cancel discards the draft.
+
+Player potential now has a 99 ceiling, while current ability must still be developed. Old saves upgrade players sitting at the former 90 cap to 99 once, across the squad, markets and academy. Other individual potentials are retained. New players may naturally have 90 potential and are not automatically upgraded on subsequent loads. Newly generated elite prospects can exceed 90 potential, with all generation capped at 99.
+
+**Read all emails** is available on Overview and in Inbox. It marks all existing reports read, preserves their contents and stable IDs, and leaves future reports unread.

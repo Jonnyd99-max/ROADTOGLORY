@@ -1,3 +1,4 @@
+import {clubIdentity} from './identity';
 import {random,type Career,type Player,type Fixture,type Position} from './engine';
 export interface MatchRating {playerId:string;name:string;position:Position;minutes:number;goals:number;assists:number;rating:number;yellow:boolean;red:boolean;injury?:string}
 export const formRating=(p:Player)=>p.recentRatings?.length?p.recentRatings.reduce((a,b)=>a+b,0)/p.recentRatings.length:6.5;
@@ -33,7 +34,7 @@ export function settlePlayerManagement(g:Career,f:Fixture){
   ratings.push({playerId:p.id,name:p.name,position:p.position,minutes,goals,assists,rating,yellow,red,injury});
  }
  f.ratings=ratings;f.playerOfMatch=[...ratings].sort((a,b)=>b.rating-a.rating||b.goals-a.goals||b.minutes-a.minutes||a.playerId.localeCompare(b.playerId))[0]?.playerId;
- if(ratings.length)g.inbox.unshift(`Assistant match report · Matchweek ${f.round+1}\n\nDragons player of the match: ${ratings.find(p=>p.playerId===f.playerOfMatch)!.name}.\n${ratings.map(p=>`${p.name}: ${p.rating.toFixed(1)} · ${p.goals} goals · ${p.assists} assists${p.red?' · sent off':p.yellow?' · booked':''}${p.injury?' · '+p.injury:''}`).join('\n')}`);
+ if(ratings.length)g.inbox.unshift(`Assistant match report · Matchweek ${f.round+1}\n\n${clubIdentity(g).shortName} player of the match: ${ratings.find(p=>p.playerId===f.playerOfMatch)!.name}.\n${ratings.map(p=>`${p.name}: ${p.rating.toFixed(1)} · ${p.goals} goals · ${p.assists} assists${p.red?' · sent off':p.yellow?' · booked':''}${p.injury?' · '+p.injury:''}`).join('\n')}`);
  return ratings;
 }
 export function assistantAdvice(g:Career){const advice:string[]=g.squad.filter(p=>!available(p)).map(p=>`${p.name}: ${availability(p)}.${g.selection.includes(p.id)?' Choose a replacement.':''}`),selected=g.squad.filter(p=>g.selection.includes(p.id));

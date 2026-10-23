@@ -1,3 +1,4 @@
+import {clubIdentity} from './identity';
 import {clubById,opponentName,type Career,type Fixture,type Goal} from './engine';
 export const MATCH_PACE=300; // Five match minutes per second between highlights.
 export const SHOT_TIME=.65;
@@ -18,7 +19,7 @@ export function tickPlayback(state:Playback,goals:Goal[],to:number,delta:number)
 }
 export function playbackScore(f:Fixture,state:Playback,from:number,goals:Goal[]):[number,number]{const counted=[...(f.goals??[]).filter(g=>g.minute<=from),...goals.slice(0,state.nextGoal+(state.phase==='goal'&&state.elapsed>=SHOT_TIME?1:0))];return counted.reduce<[number,number]>((score,g)=>{score[g.teamId===f.home?0:1]++;return score},[0,0])}
 export function commentaryLine(g:Career,f:Fixture,second:number){
- const beat=Math.floor(second/90),ours=beat%3!==0,id=ours?0:(f.home===0?f.away:f.home),team=ours?'Dragons':clubById(g.clubs,id).name;
+ const beat=Math.floor(second/90),ours=beat%3!==0,id=ours?0:(f.home===0?f.away:f.home),team=ours?clubIdentity(g).shortName:clubById(g.clubs,id).name;
  const players=g.squad.filter(p=>!p.loan&&p.position!=='GK'&&(g.activeMatch?.lineup??g.selection).includes(p.id));
  const name=ours?(players[beat%Math.max(1,players.length)]?.name.split(' ').slice(1).join(' ')??'the striker'):opponentName(id,beat%10).split(' ').slice(1).join(' ');
  return [`${team} attack.`,`${name} looks for a teammate.`,`Close from ${name}!`,`${team} push forward.`,`${name} sends it wide.`,`${team} keep possession.`,`A dangerous ball from ${name}.`,`${team} win the ball back.`][beat%8];
