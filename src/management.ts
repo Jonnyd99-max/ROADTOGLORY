@@ -5,7 +5,10 @@ export const morale=(p:Player)=>p.morale??60;
 export function availability(p:Player){const statuses:string[]=[];if(p.age<16)statuses.push('Youth only · First team from age 16');if(p.loan)statuses.push('On loan');if(p.injury&&p.injury.weeks>0)statuses.push(`${p.injury.name} · ${p.injury.weeks} matchweek${p.injury.weeks===1?'':'s'}`);if((p.suspension??0)>0)statuses.push(`Suspended · ${p.suspension} match${p.suspension===1?'':'es'}`);return statuses.join(' · ')||'Available'}
 export const available=(p:Player)=>p.age>=16&&!p.loan&&!(p.injury&&p.injury.weeks>0)&&!(p.suspension&&p.suspension>0);
 export const performanceFactor=(p:Player)=>Math.max(.9,Math.min(1.1,1+(formRating(p)-6.5)*.025+(morale(p)-60)/1000));
-export const selectionScore=(p:Player)=>p.ability*(.6+.4*p.fitness/100)*performanceFactor(p);
+export const selectionModes=['Balanced','Rating','Fitness','Form'] as const;
+export type SelectionMode=typeof selectionModes[number];
+export function selectionScore(p:Player,mode:SelectionMode='Balanced'){if(mode==='Rating')return p.ability;if(mode==='Fitness')return p.fitness;if(mode==='Form')return formRating(p);return p.ability*.5+p.fitness*.3+formRating(p)*2;}
+export const selectionHelp={Balanced:'50% ability, 30% fitness and 20% recent form.',Rating:'Highest current ability in each position.',Fitness:'Highest fitness in each position.',Form:'Best average rating over the last five matches. Unrated players use 6.5.'};
 const hash=(id:string)=>[...id].reduce((n,c)=>n*31+c.charCodeAt(0),7)>>>0;
 const clamp=(n:number,low:number,high:number)=>Math.max(low,Math.min(high,n));
 /** Called once at settlement. Existing absences serve this fixture; new absences start next fixture. */
@@ -35,11 +38,11 @@ export function settlePlayerManagement(g:Career,f:Fixture){
 }
 export function assistantAdvice(g:Career){const advice:string[]=g.squad.filter(p=>!available(p)).map(p=>`${p.name}: ${availability(p)}.${g.selection.includes(p.id)?' Choose a replacement.':''}`),selected=g.squad.filter(p=>g.selection.includes(p.id));
  for(const p of selected){if(!available(p))continue;
-  const cover=g.squad.filter(q=>q.position===p.position&&available(q)&&!g.selection.includes(q.id)).sort((a,b)=>selectionScore(b)-selectionScore(a))[0];
+  const cover=g.squad.filter(q=>q.position===p.position&&available(q)&&!g.selection.includes(q.id)).sort((a,b)=>selectionScore(b,g.assistantMode)-selectionScore(a,g.assistantMode))[0];
   if(p.fitness<78)advice.push(`${p.name} is tired (${p.fitness}%). ${cover&&cover.fitness>p.fitness?`Rotate with ${cover.name} (${cover.fitness}% fitness).`:'No fresher cover in this position.'}`);
   if(formRating(p)<6)advice.push(`${p.name} is out of form (${formRating(p).toFixed(1)} over recent games).`);
   if(morale(p)<40)advice.push(`${p.name} has low morale (${morale(p)}/100); regular minutes and good results can help.`);
  }
  for(const [i,pos] of (['GK','DEF','MID','FWD'] as const).entries()){const need=[1,...g.formation.split('-').map(Number)][i],count=g.squad.filter(p=>p.position===pos&&available(p)).length;if(count<need)advice.push(`${pos}: only ${count} available, need ${need}. Change formation, recruit, or recall a loan player.`)}
- return advice.length?advice:['Your selected XI is fit and available. Assistant pick balances ability, fitness, recent form and morale in each position.'];
+ return advice.length?advice:['Your selected XI is fit and available. Assistant pick uses your chosen selection mode in each position.'];
 }

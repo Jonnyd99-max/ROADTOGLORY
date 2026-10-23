@@ -4,11 +4,11 @@ Five deterministic careers, three seasons each. New matchdays simulate all eight
 
 | Seed | Previous year-three cash | Current year-three cash | Current fanbase | Current tier / finish | Average ability |
 | --- | ---: | ---: | ---: | --- | ---: |
-| 17 | £895,235 | £72,043 | 4,206 | Tier 7 / 10 | 60.7 |
-| 81 | £741,281 | £137,107 | 3,823 | Tier 7 / 11 | 59.3 |
-| 2026 | £761,789 | £97,645 | 3,858 | Tier 7 / 14 | 57.5 |
-| 2040 | £727,983 | £115,106 | 4,214 | Tier 8 / 1 | 56.7 |
-| 9901 | £919,471 | £127,007 | 4,334 | Tier 7 / 11 | 59.6 |
+| 17 | £895,235 | £77,020 | 3,882 | Tier 8 / 2 | 60.7 |
+| 81 | £741,281 | £82,477 | 3,973 | Tier 8 / 3 | 59.3 |
+| 2026 | £761,789 | £75,335 | 3,789 | Tier 8 / 2 | 57.5 |
+| 2040 | £727,983 | £80,145 | 3,724 | Tier 8 / 2 | 56.5 |
+| 9901 | £919,471 | £63,702 | 3,287 | Tier 8 / 5 | 59.6 |
 
 ## Method and findings
 
@@ -36,3 +36,7 @@ First-team training and development loans now improve attack and defence alongsi
 ## Eight-tier pyramid
 
 Version 0.3.0 keeps 22 clubs in each of eight connected divisions. Every boundary exchanges the lower champion and playoff winner with the upper bottom two. Higher-tier relegated clubs now enter Tier 7, so the updated early-career benchmark has different opponents after season rollover. Structural tests cover a complete seven-promotion climb and seven-relegation descent, ongoing-playoff migration and single-tier movement for all 176 clubs. The three-season benchmark has a 60-second timeout to accommodate the larger simulated world.
+
+## Age fatigue and rotation
+
+Version 0.3.1 applies age-dependent fatigue, recovery and actual substitute minutes. The benchmark now uses the default 50/30/20 Balanced assistant selection. The five starting squads remain solvent, but take longer to earn promotion while the controlled benchmark forbids recruitment. This is a bounded early-career sample rather than an all-tier balance guarantee.

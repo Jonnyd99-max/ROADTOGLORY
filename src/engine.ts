@@ -1,9 +1,10 @@
+import {matchFatigue,ageRecovery} from './conditioning';
 import {agreePackage,type Perk,type ContractPackage} from './negotiation';
 import {repairDevelopment,changeAbility,conditionFactor} from './development';
 import {ensureAcademy,developAcademy,startAcademySeason} from './academy';
 import {digestNewMail,inboxThreads} from './mail';
 import {ensureSeasonMarkets} from './seasonMarket';
-import {available,selectionScore,performanceFactor} from './management';
+import {available,selectionScore,performanceFactor,selectionModes,type SelectionMode} from './management';
 import {recordPlayerMatch} from './playerStats';
 import {division,type Tier} from './division';
 import {ensureCompetition,playOtherRound,prepareFinale,settleSeason,type Competition} from './competition';
@@ -13,16 +14,17 @@ export type Position='GK'|'DEF'|'MID'|'FWD';
 export const positionOrder:Position[]=['GK','DEF','MID','FWD'];
 export const positionLabel=(position:Position)=>position==='FWD'?'ATT':position;
 export function orderedSquad(squad:Player[]){return [...squad].sort((a,b)=>positionOrder.indexOf(a.position)-positionOrder.indexOf(b.position)||b.ability-a.ability||a.name.localeCompare(b.name)||a.id.localeCompare(b.id))}
-export function assistantPick(input:Career):Career{
+export function assistantPick(input:Career,mode:SelectionMode=input.assistantMode??'Balanced'):Career{
+ if(!selectionModes.includes(mode))throw Error('Choose a supported assistant selection mode');
  const formation=input.formation.split('-').map(Number);
  if(formation.length!==3||formation.some(n=>!Number.isInteger(n)||n<1)||formation.reduce((a,b)=>a+b,0)!==10)throw Error('Choose a supported formation');
  const requirements=[1,...formation],selection:string[]=[];
  for(const [index,pos] of positionOrder.entries()){
-  const candidates=orderedSquad(input.squad).filter(p=>p.position===pos&&available(p)).sort((a,b)=>selectionScore(b)-selectionScore(a)||b.ability-a.ability);
+  const candidates=orderedSquad(input.squad).filter(p=>p.position===pos&&available(p)).sort((a,b)=>selectionScore(b,mode)-selectionScore(a,mode)||b.ability-a.ability);
   if(candidates.length<requirements[index])throw Error(`Not enough ${positionLabel(pos)} players for ${input.formation}: need ${requirements[index]}, have ${candidates.length}`);
   selection.push(...candidates.slice(0,requirements[index]).map(p=>p.id));
  }
- return {...input,selection};
+ return {...input,selection,assistantMode:mode};
 }
 export interface PlayerSeasonStats {assists?:number;ratingTotal?:number;ratedAppearances?:number;cleanSheets?:number;season:number;appearances:number;starts:number;minutes:number;goals:number}
 export interface Player {contractPackage?:ContractPackage;attributeAbility?:number;academyPromotedSeason?:number;freeAgentSignedSeason?:number;loanIn?:import('./seasonMarket').IncomingLoan;morale?:number;recentRatings?:number[];unusedMatches?:number;injury?:{name:string;weeks:number};suspension?:number;yellows?:number;stats?:PlayerSeasonStats[];id:string;name:string;position:Position;age:number;ability:number;startingAbility?:number;potential:number;fitness:number;wage:number;contract:number;attack:number;defence:number;loan?:Loan}
@@ -30,7 +32,7 @@ export interface Club {id:number;name:string;strength:number}
 export interface Goal {assistId?:string;assistName?:string;assistRecorded?:boolean;minute:number;teamId:number;playerName:string;playerId?:string}
 export interface Fixture {ratings?:import('./management').MatchRating[];playerOfMatch?:string;minutes?:Record<string,number>;starters?:string[];goals?:Goal[];round:number;home:number;away:number;score?:[number,number];events?:string[];winner?:number;decidedBy?:'penalties'}
 export interface Transaction {round:number;label:string;amount:number}
-export interface Career {academy?:import('./academy').Academy;seasonMarkets?:import('./seasonMarket').SeasonMarkets;version:1;seed:number;season:number;round:number;cash:number;squad:Player[];market:Player[];clubs:Club[];fixtures:Fixture[];selection:string[];formation:string;tactic:string;training:string;ledger:Transaction[];inbox:string[];readMailIds?:number[];marketMonth?:string;club?:ClubDevelopment;tier?:Tier;competition?:Competition;postseasonWeeks?:number;activeMatch?:import('./match').LiveMatch}
+export interface Career {assistantMode?:SelectionMode;academy?:import('./academy').Academy;seasonMarkets?:import('./seasonMarket').SeasonMarkets;version:1;seed:number;season:number;round:number;cash:number;squad:Player[];market:Player[];clubs:Club[];fixtures:Fixture[];selection:string[];formation:string;tactic:string;training:string;ledger:Transaction[];inbox:string[];readMailIds?:number[];marketMonth?:string;club?:ClubDevelopment;tier?:Tier;competition?:Competition;postseasonWeeks?:number;activeMatch?:import('./match').LiveMatch}
 export function random(seed:number){let a=seed>>>0;return()=>{a+=0x6D2B79F5;let t=a;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return((t^t>>>14)>>>0)/4294967296}}
 export function schedule(count=22):Fixture[]{if(count<2||count%2)throw Error('Even number of clubs required');let ids=Array.from({length:count},(_,i)=>i);const first:Fixture[]=[];for(let r=0;r<count-1;r++){for(let i=0;i<count/2;i++){const pair=[ids[i],ids[count-1-i]];first.push({round:r,home:pair[r%2],away:pair[1-r%2]})}ids=[ids[0],ids[count-1],...ids.slice(1,-1)]}return [...first,...first.map(f=>({round:f.round+count-1,home:f.away,away:f.home}))]}
 const firstNames=['Oliver','Theo','Jack','Alfie','Noah','Harry','Archie','Leo','Oscar','Charlie','Finley','George','Lucas','Ethan','Mason','Hugo','Max','Toby','Isaac','Dylan','Reuben','Jude','Sam','Elliot','Ben','Rory'];
@@ -45,18 +47,18 @@ export function clubById(clubs:Club[],id:number){const club=clubs.find(c=>c.id==
 export function simulateFixture(g:Career,f:Fixture,clubs=g.clubs){
  const r=random(g.seed+g.season*1000+f.round*97+f.home*13+f.away*31);
  const team=g.squad.filter(p=>g.selection.includes(p.id)&&!p.loan);
- const strength=team.length?team.reduce((s,p)=>s+(p.ability*.6+(p.attack+p.defence)*.2)*conditionFactor(p.fitness,45)*performanceFactor(p),0)/team.length:40;
+ const strength=team.length?team.reduce((s,p)=>s+(p.ability*.6+(p.attack+p.defence)*.2)*conditionFactor(p.fitness,45,p.age,p.position)*performanceFactor(p),0)/team.length:40;
 let hs=f.home===0?strength:clubById(clubs,f.home).strength*conditionFactor(100,45),as=f.away===0?strength:clubById(clubs,f.away).strength*conditionFactor(100,45);const attack=(f.home===0||f.away===0)?(g.tactic==='Attacking'?1.2:g.tactic==='Defensive'?.8:1):1;const h=poisson(r,Math.max(.25,1.35+(hs-as)/23)*attack),a=poisson(r,Math.max(.2,1.05+(as-hs)/23)*attack);f.score=[h,a];if(f.home===0||f.away===0){f.events=[];for(let i=0;i<h+a;i++){const home=i<h;f.events.push(`${8+Math.floor(r()*81)}′ · ${home?clubById(clubs,f.home).name:clubById(clubs,f.away).name} score`)}f.events.sort((a,b)=>parseInt(a)-parseInt(b));f.goals=[];for(const [side,count] of [h,a].entries())for(let i=0;i<count;i++){const teamId=side===0?f.home:f.away;const scorer=team.filter(p=>p.position!=='GK')[Math.floor(r()*10)];f.goals.push({minute:8+Math.floor(r()*81),teamId,playerName:teamId===0?scorer.name:opponentName(teamId,Math.floor(r()*10)),playerId:teamId===0?scorer.id:undefined})}f.goals.sort((a,b)=>a.minute-b.minute);processClubMatch(g,f);g.inbox.unshift(`Matchday ${g.round+1}: ${clubById(clubs,f.home).name} ${h}–${a} ${clubById(clubs,f.away).name}.`)}
 }
-export function finishWeek(g:Career){
+export function finishWeek(g:Career,minutes?:Record<string,number>){
 const r=random(g.seed+g.season*1000+g.round*97+90001);
-const wages=g.squad.reduce((s,p)=>s+p.wage,0);g.cash-=wages;g.ledger.unshift({round:g.round,label:'Weekly player wages',amount:-wages});const growth:string[]=[];g.squad.forEach(p=>{if(p.loan)return;p.startingAbility??=p.ability;p.fitness=Math.min(100,Math.max(35,p.fitness-(g.selection.includes(p.id)?14:0)+recoveryPoints(g)));if(!p.injury&&p.age<25&&p.ability<p.potential&&r()<trainingChance(g,p)){changeAbility(p,Math.min(p.potential,p.ability+1));growth.push(`${p.name}: ${p.ability-1} → ${p.ability} (+1)`)}});if(growth.length)g.inbox.unshift(`Development report · Matchweek ${g.round+1}\n\n${growth.join('\n')}\n\nYour ${g.training.toLowerCase()} training and first-team experience are helping young players improve. Green ability segments show total growth since their starting rating.`);processLoans(g);developAcademy(g);
+const wages=g.squad.reduce((s,p)=>s+p.wage,0);g.cash-=wages;g.ledger.unshift({round:g.round,label:'Weekly player wages',amount:-wages});const growth:string[]=[];g.squad.forEach(p=>{if(p.loan)return;p.startingAbility??=p.ability;const played=minutes?(minutes[p.id]??0):(g.selection.includes(p.id)?90:0);p.fitness=Math.min(100,Math.round(Math.max(35,p.fitness-matchFatigue(p)*played/90)+ageRecovery(p,recoveryPoints(g))));if(!p.injury&&p.age<25&&p.ability<p.potential&&r()<trainingChance(g,p)){changeAbility(p,Math.min(p.potential,p.ability+1));growth.push(`${p.name}: ${p.ability-1} → ${p.ability} (+1)`)}});if(growth.length)g.inbox.unshift(`Development report · Matchweek ${g.round+1}\n\n${growth.join('\n')}\n\nYour ${g.training.toLowerCase()} training and first-team experience are helping young players improve. Green ability segments show total growth since their starting rating.`);processLoans(g);developAcademy(g);
 }
 export function playRound(input:Career,resolved?:Fixture):Career{
  if(input.round>=42)throw Error('Season complete');if(!validTeam(input))throw Error('Select 11 players matching your formation');
  const g=structuredClone(input),mailBefore=g.inbox.length;ensureClub(g);ensureCompetition(g);
  for(const f of g.fixtures.filter(f=>f.round===g.round)){if(resolved&&f.home===resolved.home&&f.away===resolved.away){Object.assign(f,resolved);processClubMatch(g,f)}else simulateFixture(g,f);}
- const played=g.fixtures.find(f=>f.round===g.round&&(f.home===0||f.away===0))!;recordPlayerMatch(g,played);playOtherRound(g);finishWeek(g);g.round++;refreshMarket(g);
+ const played=g.fixtures.find(f=>f.round===g.round&&(f.home===0||f.away===0))!;recordPlayerMatch(g,played);playOtherRound(g);finishWeek(g,played.minutes);g.round++;refreshMarket(g);
  if(g.round===42){prepareFinale(g);g.inbox.unshift('League season complete. Review the table and promotion playoffs before starting the next campaign.')}
  digestNewMail(g,mailBefore,`Weekly digest · Matchweek ${g.round}`,`${clubById(g.clubs,played.home).name} ${played.score!.join(' – ')} ${clubById(g.clubs,played.away).name}\nCash: £${g.cash.toLocaleString('en-GB')} · Weekly wages: £${g.squad.reduce((n,p)=>n+p.wage,0).toLocaleString('en-GB')}`);return g;
 }
