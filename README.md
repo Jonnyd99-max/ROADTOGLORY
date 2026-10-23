@@ -162,3 +162,7 @@ Club name, commentary short name, stadium name and training facilities name are 
 Player potential now has a 99 ceiling, while current ability must still be developed. Old saves upgrade players sitting at the former 90 cap to 99 once, across the squad, markets and academy. Other individual potentials are retained. New players may naturally have 90 potential and are not automatically upgraded on subsequent loads. Newly generated elite prospects can exceed 90 potential, with all generation capped at 99.
 
 **Read all emails** is available on Overview and in Inbox. It marks all existing reports read, preserves their contents and stable IDs, and leaves future reports unread.
+
+### Version 0.4.1: dimensional club graphics
+
+Custom badges now use layered metal edges, a bevelled rim, lit enamel, embossed symbols and a raised initials plate. Kit rendering adds shaped sleeves and collars, cloth folds, woven texture, seams, trim and matching shorts/socks. The lighting is generated from the chosen colours and works with every crest shape, symbol and kit pattern. Graphics remain responsive local SVG and work offline; saved club designs update automatically without changing career data.

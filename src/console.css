@@ -46,3 +46,7 @@ nav button>.nav-caption{height:auto;display:block;line-height:1.2;width:auto;fon
 @media(max-width:700px){.designer-layout{grid-template-columns:1fr}.designer-preview{position:static}.club-strip .custom-crest{width:43px;height:50px;left:calc(50% - 21px);top:10px}.badge-options{grid-template-columns:repeat(3,1fr)}.club-designer h1{font-size:28px}.designer-preview>.custom-crest{width:115px;height:135px}}
 
 .club-designer input[type=text],.club-designer select{display:block;width:100%;margin-top:8px;min-height:44px}.palette-options{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}.palette-options button{min-height:40px}
+
+.designer-preview{background:radial-gradient(ellipse at 35% 12%,#4a5275 0%,#292e4e 45%,#171c32 100%)}.designer-preview>.crest-sculpted{width:175px;height:200px}.designer-preview .custom-kit-pair{gap:4px;padding-top:10px}.designer-preview .kit-sculpted{width:48%;max-width:220px}.kit-display .kit-sculpted{height:210px;width:auto;max-width:48%}.badge-options .crest-sculpted{width:65px;height:75px}@media(max-width:700px){.designer-preview>.crest-sculpted{width:145px;height:166px}.kit-display .kit-sculpted{height:160px}}
+
+.designer-preview>.crest-sculpted{width:140px;height:160px}.designer-preview .kit-sculpted{height:225px;width:auto;max-width:48%}.designer-preview h2{margin:12px 0}.designer-preview p{margin:8px 0}.designer-preview .custom-kit-pair{padding-top:4px}
