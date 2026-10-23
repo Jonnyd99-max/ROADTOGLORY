@@ -1,3 +1,4 @@
+import {settlePlayingTime} from './personality';
 import {clubIdentity} from './identity';
 import {random,type Career,type Player,type Fixture,type Position} from './engine';
 export interface MatchRating {playerId:string;name:string;position:Position;minutes:number;goals:number;assists:number;rating:number;yellow:boolean;red:boolean;injury?:string}
@@ -14,12 +15,13 @@ const hash=(id:string)=>[...id].reduce((n,c)=>n*31+c.charCodeAt(0),7)>>>0;
 const clamp=(n:number,low:number,high:number)=>Math.max(low,Math.min(high,n));
 /** Called once at settlement. Existing absences serve this fixture; new absences start next fixture. */
 export function settlePlayerManagement(g:Career,f:Fixture){
+ const eligibleBefore=new Set(g.squad.filter(available).map(p=>p.id));
  const ours=f.score![f.home===0?0:1],against=f.score![f.home===0?1:0],win=ours>against,draw=ours===against;
  for(const p of g.squad){if(p.injury){p.injury.weeks--;if(p.injury.weeks<=0){delete p.injury;g.inbox.unshift(`Medical update · ${p.name}\n\nFit to return to the squad.`)}}if(p.suspension)p.suspension=Math.max(0,p.suspension-1)}
  for(const [i,goal] of (f.goals??[]).entries()){if(goal.teamId!==0||goal.assistRecorded)continue;if(f.minutes){goal.assistRecorded=true;continue}const helpers=g.squad.filter(p=>p.position!=='GK'&&p.id!==goal.playerId&&(f.starters??g.selection).includes(p.id));const r=random(g.seed+f.round*73+i*311);const helper=helpers[Math.floor(r()*helpers.length)];if(helper&&r()<.8){goal.assistId=helper.id;goal.assistName=helper.name}goal.assistRecorded=true}
  const ratings:MatchRating[]=[];let injuryAssigned=false;
  for(const p of g.squad){const minutes=f.minutes?.[p.id]??((f.starters??g.selection).includes(p.id)?90:0);if(p.loan)continue;
-  if(!minutes){if(available(p)){p.unusedMatches=(p.unusedMatches??0)+1;if(p.unusedMatches>2)p.morale=clamp(morale(p)-1,10,95)}continue}
+  if(!minutes){if(available(p)){p.unusedMatches=(p.unusedMatches??0)+1;if(!p.squadRole&&p.unusedMatches>2)p.morale=clamp(morale(p)-1,10,95);if(eligibleBefore.has(p.id))settlePlayingTime(p,false)}continue}
   const r=random(g.seed+g.season*1009+f.round*10007+hash(p.id));
   const goals=(f.goals??[]).filter(e=>e.teamId===0&&e.playerId===p.id).length,assists=(f.goals??[]).filter(e=>e.teamId===0&&e.assistId===p.id).length;
   const defensive=p.position==='GK'||p.position==='DEF',clean=against===0&&minutes>=60;
@@ -31,6 +33,7 @@ export function settlePlayerManagement(g:Career,f:Fixture){
   const recovery=g.club?.facilities.recovery??0,risk=.018*(1+(100-p.fitness)/40)*(minutes/90)*(1-recovery*.12);
   if(!injuryAssigned&&r()<risk){const names=['Bruised ankle','Hamstring strain','Twisted knee'];const weeks=Math.max(1,1+Math.floor(r()*3)-Math.floor(recovery/2));p.injury={name:names[Math.floor(r()*names.length)],weeks};injury=p.injury.name;injuryAssigned=true;g.inbox.unshift(`Medical update · ${p.name}\n\n${injury}: unavailable for ${weeks} matchweek${weeks===1?'':'s'}. Recovery facilities reduce injury risk and lay-off length.`)}
   p.recentRatings=[...(p.recentRatings??[]),rating].slice(-5);p.unusedMatches=0;p.morale=clamp(morale(p)+(win?3:draw?0:-3)+(rating>=7.5?2:rating<5.5?-2:0)+1,10,95);
+  if(eligibleBefore.has(p.id))settlePlayingTime(p,(f.starters??g.selection).includes(p.id));
   ratings.push({playerId:p.id,name:p.name,position:p.position,minutes,goals,assists,rating,yellow,red,injury});
  }
  f.ratings=ratings;f.playerOfMatch=[...ratings].sort((a,b)=>b.rating-a.rating||b.goals-a.goals||b.minutes-a.minutes||a.playerId.localeCompare(b.playerId))[0]?.playerId;

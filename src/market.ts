@@ -1,3 +1,4 @@
+import {archivePlayer} from './clubHistory';
 import {changeAbility} from './development';
 import {available} from './management';
 import {tierOf,division} from './division';
@@ -34,7 +35,7 @@ export function sellPlayer(input:Career,id:string):Career{
  const g=structuredClone(input),p=removable(g,id),offer=saleOffer(g,p);if(p.freeAgentSignedSeason===g.season)throw Error('Free-agent signings can be sold from next season');if(p.academyPromotedSeason===g.season)throw Error('Academy graduates can be sold from next season');
  // Sale income may reduce an overdraft without needing to clear it in one transaction.
  transact(g,`Sale: ${p.name} to ${offer.club}`,offer.fee);
- g.squad=g.squad.filter(p=>p.id!==id);g.selection=g.selection.filter(x=>x!==id);
+ archivePlayer(g,p,'Transferred');g.squad=g.squad.filter(p=>p.id!==id);g.selection=g.selection.filter(x=>x!==id);
  g.inbox.unshift(`Player sold Â· ${p.name}\n\n${offer.club} have paid Â£${offer.fee.toLocaleString('en-GB')} for ${p.name}. His Â£${p.wage} weekly wage is removed from your commitments. If he was in your starting XI, select a replacement before the next match.`);
  return g;
 }
