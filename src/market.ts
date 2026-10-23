@@ -1,3 +1,4 @@
+import {changeAbility} from './development';
 import {available} from './management';
 import {tierOf,division} from './division';
 import {assistantPick,random,transact,type Career,type Player} from './engine';
@@ -53,7 +54,7 @@ export function processLoans(g:Career){
  const r=random(g.seed+g.season*991+g.round*157+777);
  for(const p of g.squad){if(!p.loan)continue;const loan=p.loan;loan.weeksPlayed++;
   const contribution=Math.floor(p.wage*loan.wageShare/100);transact(g,`Loan wage contribution: ${p.name}`,contribution);
-  if(p.ability<p.potential&&r()<(p.age<25?.35:.12)){p.startingAbility??=p.ability;p.ability++;g.inbox.unshift(`Loan development Â· ${p.name}\n\n${p.name} has improved to ${p.ability} ability (+1) through regular football at ${loan.club}. Total loan growth: +${p.ability-loan.startingAbility}.`)}
+  if(p.ability<p.potential&&r()<(p.age<25?.35:.12)){p.startingAbility??=p.ability;changeAbility(p,p.ability+1);g.inbox.unshift(`Loan development Â· ${p.name}\n\n${p.name} has improved to ${p.ability} ability (+1) through regular football at ${loan.club}. Total loan growth: +${p.ability-loan.startingAbility}.`)}
   p.fitness=100;
   if(g.round+1>=loan.returnRound)finishLoan(g,p,'completed');
  }

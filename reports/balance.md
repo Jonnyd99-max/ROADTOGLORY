@@ -4,11 +4,11 @@ Five deterministic careers, three seasons each. New matchdays also simulate both
 
 | Seed | Previous year-three cash | Current year-three cash | Current fanbase | Current tier / finish | Average ability |
 | --- | ---: | ---: | ---: | --- | ---: |
-| 17 | £895,235 | £52,424 | 4,090 | Tier 8 / 1st | 60.7 |
-| 81 | £741,281 | £93,950 | 4,085 | Tier 8 / 5th | 59.3 |
-| 2026 | £761,789 | £77,276 | 3,731 | Tier 8 / 8th | 57.5 |
-| 2040 | £727,983 | £73,552 | 4,022 | Tier 8 / 1st | 56.6 |
-| 9901 | £919,471 | £74,961 | 4,062 | Tier 8 / 1st | 59.6 |
+| 17 | £895,235 | £72,929 | 4,250 | Tier 7 / 11 | 60.7 |
+| 81 | £741,281 | £112,997 | 3,501 | Tier 7 / 19 | 59.3 |
+| 2026 | £761,789 | £107,622 | 4,104 | Tier 7 / 12 | 57.5 |
+| 2040 | £727,983 | £115,356 | 4,300 | Tier 8 / 1 | 56.7 |
+| 9901 | £919,471 | £127,907 | 4,544 | Tier 7 / 5 | 59.6 |
 
 ## Method and findings
 
@@ -28,3 +28,7 @@ The new competition engine also derives each fixture's random stream from its id
 ## Reproduction
 
 Run `pnpm test` for the complete suite, or `pnpm exec vitest run src/balance.test.ts` for the benchmark. The test regenerates `reports/balance-latest.json` and asserts cash reconciles exactly to the ledger, remains solvent in the sampled runs and avoids the former cash buildup.
+
+## Development and condition correction
+
+First-team training and development loans now improve attack and defence alongside overall ability. Legacy earned growth is restored once on load; academy growth is not credited twice. Opponents use the same fatigue curve as Dragons, with full starting condition assumed for AI teams. The quick simulation samples midpoint condition, while live halves update condition each minute. The benchmark above was regenerated after this correction.
