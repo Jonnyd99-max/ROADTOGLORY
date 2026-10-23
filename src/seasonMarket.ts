@@ -7,10 +7,10 @@ export interface LoanListing extends Player {parentClub:string;loanFee:number;pa
 export interface SeasonMarkets {season:number;freeAgents:Player[];loans:LoanListing[]}
 export function ensureSeasonMarkets(g:Career):SeasonMarkets{
  if(g.seasonMarkets?.season===g.season)return g.seasonMarkets;
- const r=random(g.seed+g.season*1907),extra=tierOf(g)===7?8:0;
+ const r=random(g.seed+g.season*1907),extra=tierOf(g)===8?0:8+(7-tierOf(g))*6;
  const make=(kind:'free'|'loan')=>monthlyMarket({...g,seed:g.seed+(kind==='free'?30017:70019),round:0,postseasonWeeks:0}).map((p,i)=>{
-  const age=kind==='free'?19+Math.floor(r()*16):18+Math.floor(r()*6),ability=(kind==='free'?33:43)+extra+Math.floor(r()*(kind==='free'?28:23));
-  return {...p,id:`${kind}-${g.season}-${i}`,age,ability,startingAbility:ability,potential:Math.min(90,ability+(age<25?12+Math.floor(r()*15):4)),attack:ability+Math.floor(r()*9)-4,defence:ability+Math.floor(r()*9)-4,wage:Math.round((kind==='free'?80+ability:100+ability)*(extra?1.45:1)),contract:1};
+  const age=kind==='free'?19+Math.floor(r()*16):18+Math.floor(r()*6),ability=Math.min(90,(kind==='free'?33:43)+extra+Math.floor(r()*(kind==='free'?28:23)));
+  return {...p,id:`${kind}-${g.season}-${i}`,age,ability,startingAbility:ability,potential:Math.min(90,ability+(age<25?12+Math.floor(r()*15):4)),attack:ability+Math.floor(r()*9)-4,defence:ability+Math.floor(r()*9)-4,wage:Math.round((kind==='free'?80+ability:100+ability)*(extra?1.45*Math.pow(1.65,Math.max(0,7-tierOf(g))):1)),contract:1};
  });
  const freeAgents=make('free'),clubs=['Manchester North FC','Lancashire County','Pennine City','Mersey Athletic','Cheshire United','Yorkshire Albion'];
  const loans=make('loan').map((p,i)=>({...p,parentClub:clubs[i%clubs.length],parentWage:p.wage,wage:Math.ceil(p.wage*.5),loanFee:p.ability*20}));

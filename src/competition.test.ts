@@ -31,8 +31,8 @@ it('relegates Tier 7 bottom two while honouring existing player contracts',()=>{
  const g=ranked(7,22);g.squad.forEach(p=>p.wage=190);const next=nextSeason(g);expect(tierOf(next)).toBe(8);expect(next.competition!.history[0].outcome).toBe('Relegated');expect(division(next).wageBudget).toBe(2600);expect(next.squad.every(p=>p.wage===190)).toBe(true);
  const p=next.market[0];expect(()=>signPlayer(next,p.id,p.ability*110,p.wage,2)).toThrow('budget');expect(playRound(assistantPick(next)).round).toBe(1);
 });
-it('keeps Tier 7 champions within the implemented pyramid with the correct prize',()=>{
- const next=nextSeason(ranked(7,1));expect(tierOf(next)).toBe(7);expect(next.competition!.history[0]).toMatchObject({outcome:'Champions',prize:18000});
+it('promotes Tier 7 champions to Tier 6 with the correct prize',()=>{
+ const next=nextSeason(ranked(7,1));expect(tierOf(next)).toBe(6);expect(next.competition!.history[0]).toMatchObject({outcome:'Promoted',prize:36000});
 });
 it('requires playable promotion ties and preserves the league table and saves',async()=>{
  const g=ranked(8,2);prepareFinale(g);expect(playoffPending(g)).toBe(true);expect(()=>nextSeason(g)).toThrow('playoffs');expect(()=>playPlayoff({...g,selection:[]})).toThrow('Select 11');

@@ -75,7 +75,7 @@ export function migrateCareer(input:Career):Career{
   const originals=season?players(g.seed+Number(season[1]),26,'s'+season[1]):p.id.startsWith('m')?originalMarket:originalSquad;
   p.startingAbility=originals.find(x=>x.id===p.id)?.ability??p.ability;
  }
- g.readMailIds??=[];ensureClub(g);g.tier??=8;g.postseasonWeeks??=0;ensureCompetition(g);if(g.round===42)prepareFinale(g);
+ g.readMailIds??=[];ensureClub(g);g.tier??=8;g.postseasonWeeks??=0;ensureCompetition(g,true);if(g.round===42)prepareFinale(g);
  if(g.marketMonth===undefined){const ids=new Set([...g.squad,...g.market].map(p=>p.id));g.market=[...g.market,...monthlyMarket(g).filter(p=>!ids.has(p.id))].slice(0,Math.max(32,g.market.length));g.marketMonth=gameMonth(g)}
  ensureSeasonMarkets(g);ensureAcademy(g);for(const p of [...g.squad,...g.market,...g.academy!.players,...g.academy!.prospects,...g.seasonMarkets!.freeAgents,...g.seasonMarkets!.loans])repairDevelopment(p);return g;
 }

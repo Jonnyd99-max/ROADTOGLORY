@@ -22,35 +22,33 @@ Start on the club overview. Open **Squad & tactics**, pick 11 players matching y
 
 The squad is grouped GK (green), DEF (gold), MID (blue) and ATT (pink), highest current ability first within each group. New signings appear in their position group. **Assistant pick** at the top of Squad & tactics selects the highest-rated available players for the chosen formation. It uses current ability, with names breaking ties; it does not weight fitness. If a position is short, it explains the shortage and retains the current XI. Manual selection remains available afterwards.
 
-Use Transfers to submit fee, wage and contract offers. Renew players from the squad screen. Training applies each matchweek. After 42 matches, begin another season; players age and contracts expire. Sponsorship is paid per game rather than as an annual grant. Renew your core players before advancing. The current pyramid contains Tiers 8 and 7, with promotion playoffs and relegation. Cups, player profiles/season stats, injuries, morale and live substitutions remain future work.
+Use Transfers to submit fee, wage and contract offers. Renew players from the squad screen. Training applies each matchweek. After 42 matches, begin another season; players age and contracts expire. Sponsorship is paid per game rather than as an annual grant. Renew your core players before advancing. The current pyramid spans Tiers 8 through 1, with promotion playoffs and relegation. Player profiles, season stats, injuries, morale and live substitutions are implemented; cups remain future work.
 
 ### Promotion chase and season rollover
 
-Two fictional 22-club divisions run in parallel, each with 42 league matchweeks. The **League** screen switches between both tables and marks promotion/playoff/relegation positions. These are simplified game rules, not a full recreation of the real English non-league pyramid.
+Eight fictional 22-club divisions run in parallel, each with 42 league matchweeks. The **League** screen lets you browse all eight tables and marks promotion, playoff and relegation positions. These are consistent game rules, rather than a recreation of the differing real English league formats.
 
-- Tier 8 champions go up automatically. Places 2–5 enter single-leg semifinals (2nd vs 5th, 3rd vs 4th) and a final, hosted by the higher league finisher. Level scores go straight to seeded penalties. You choose the XI/tactics and play Dragons' ties; the AI resolves the rest.
-- Tier 7's bottom two go down. Clubs move between divisions with stable identities; new fixtures include the promoted and relegated clubs. Tier 7 champions stay at the top of this first two-division pyramid. There is no Tier 6 or Tier 9 simulation yet.
-- At the end of the league season, the season panel leads through any playoffs. **Collect prize & begin next season** pays the season award once, records the finish/outcome, moves clubs, ages players and expires contracts. Review expiring deals first. Playoffs affect fitness, development and commercial finances but never league points.
-- Promotions increase the fanbase by 10%; relegations reduce it by 10%. Existing facilities, cash, players and contracts persist. Contracts are honoured after relegation even if wages exceed the reduced budget; recruitment/renewals must then fit the lower cap.
+- Tiers 2–8: champions go up automatically. Places 2–5 enter single-leg semifinals (2nd vs 5th, 3rd vs 4th) and a final, hosted by the higher league finisher. Ties go straight to deterministic penalties. The playoff winner takes the second promotion place.
+- Tiers 1–7: the bottom two go down. Tier 1 champions win the top-flight title. Tier 8 is the floor, with no relegation.
+- All divisions settle from the same end-of-season standings, so clubs move exactly one tier and every division retains 22 clubs. All club IDs persist. New schedules contain the actual promoted and relegated clubs.
+- The season panel leads through Dragons’ playoffs. **Collect prize & begin next season** pays the season award and promotion bonus once, records the finish, moves clubs, ages players and expires contracts. Playoffs affect fitness, development and finances but never league points.
+- Promotions add 10% to the fanbase; relegations remove 10%. Existing players, cash, facilities and contracts persist. Over-budget contracts are honoured after relegation; new recruitment and renewals must fit the new wage cap.
+- Existing saves retain the current season, played Dragons fixtures, standings, cash and squad. Missing divisions are generated and their past AI fixtures filled deterministically. Old Tier 8 playoff brackets are preserved, including ties already in progress. Tier 7 can now earn promotion immediately at the current season’s end.
 
-| Terms | Tier 8 | Tier 7 |
-| --- | --- | --- |
-| Weekly wage cap | £2,600 | £4,200 |
-| Ticket price | £9 | £11 |
-| Sponsor per game / win / draw bonus | £250 / £150 / £50 | £550 / £300 / £100 |
-| Fan change: win / draw / defeat | +45 / +12 / −8 | +60 / +16 / −10 |
-| Regular club costs per matchweek | £500 + £0.65 per stadium place | £1,000 + £1 per stadium place |
-| Home match operations per attendee | £2.70 | £3.20 |
-| League prize: 1st / 2nd–5th / 6th–10th / other | £8k / £4k / £2k / £1k | £18k / £10k / £5k / £2.5k |
-| Promotion bonus | £8,000 | Not applicable |
+| Tier | Division | Weekly wage budget | Opponent strength | Stadium limit |
+| --- | --- | ---: | --- | ---: |
+| 1 | Premier Division | £150,000 | 82–95 | 65,000 |
+| 2 | Championship Division | £90,000 | 79–92 | 45,000 |
+| 3 | League One Division | £50,000 | 76–88 | 30,000 |
+| 4 | League Two Division | £28,000 | 72–85 | 22,000 |
+| 5 | National Division | £15,000 | 68–82 | 15,000 |
+| 6 | National North Division | £8,000 | 64–79 | 10,000 |
+| 7 | Northern Premier Division | £4,200 | 58–75 | 5,500 |
+| 8 | Northern Division One | £2,600 | 44–61 | 2,750 |
 
-Club costs cover staff, utilities, travel and the ground; home match operations cover match staffing and gate services. These are separate from player wages and facility upkeep, all itemised in the ledger. Tier 7 opponents and monthly recruits are stronger; new market wage demands also rise. Tier 7 unlocks stadium levels 4 and 5 (4,000/5,500 capacity, £90k/£140k to build, £400/£650 weekly facility upkeep). Relegation never removes already-built stands.
+Ticket prices, sponsorship, win/draw bonuses, fan gains, operating costs, prize money and recruitment wages scale with the tier. Stadium limits affect new expansion; relegation never removes existing capacity. The stand-by-stand builder can expand beyond 5,500 in higher divisions. These are initial game-balance settings; the five-seed economy benchmark covers the early career, while transition tests cover all eight tiers.
 
-Existing saves keep all current fixtures, results, cash and players. Migration deterministically reconstructs only the previously unseen division's completed matchweeks; new costs are charged prospectively.
-
-### Balance benchmark
-
-`pnpm test` includes a repeatable three-season check across five seeds. It keeps a fixed squad on long contracts, trades no players, invests in facilities with a £25k reserve and uses assistant selection/youth training. This isolates the economy; it is not a full human-career or transfer-market evaluation. Before/after results and limitations are in [reports/balance.md](reports/balance.md). The latest run ends year three at £52k–£116k rather than the earlier £728k–£919k. Wider career playtesting is still useful.
+Version **0.3.0** identifies this release on Overview. The exact running build timestamp also appears there.
 
 ### Fans, facilities and sponsorship
 

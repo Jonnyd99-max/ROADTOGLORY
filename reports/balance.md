@@ -1,14 +1,14 @@
 # Balance and promotion milestone
 
-Five deterministic careers, three seasons each. New matchdays also simulate both divisions. Seed data: `balance-before.json` (previous rules) and `balance-latest.json` (current rules).
+Five deterministic careers, three seasons each. New matchdays simulate all eight divisions. Seed data: `balance-before.json` (previous rules) and `balance-latest.json` (current rules).
 
 | Seed | Previous year-three cash | Current year-three cash | Current fanbase | Current tier / finish | Average ability |
 | --- | ---: | ---: | ---: | --- | ---: |
-| 17 | £895,235 | £72,929 | 4,250 | Tier 7 / 11 | 60.7 |
-| 81 | £741,281 | £112,997 | 3,501 | Tier 7 / 19 | 59.3 |
-| 2026 | £761,789 | £107,622 | 4,104 | Tier 7 / 12 | 57.5 |
-| 2040 | £727,983 | £115,356 | 4,300 | Tier 8 / 1 | 56.7 |
-| 9901 | £919,471 | £127,907 | 4,544 | Tier 7 / 5 | 59.6 |
+| 17 | £895,235 | £72,043 | 4,206 | Tier 7 / 10 | 60.7 |
+| 81 | £741,281 | £137,107 | 3,823 | Tier 7 / 11 | 59.3 |
+| 2026 | £761,789 | £97,645 | 3,858 | Tier 7 / 14 | 57.5 |
+| 2040 | £727,983 | £115,106 | 4,214 | Tier 8 / 1 | 56.7 |
+| 9901 | £919,471 | £127,007 | 4,334 | Tier 7 / 11 | 59.6 |
 
 ## Method and findings
 
@@ -21,9 +21,9 @@ The new competition engine also derives each fixture's random stream from its id
 ## Limits
 
 - This is five fixed-squad careers over three seasons, not a guarantee for all strategies, longer careers or transfer/loan exploits.
-- The Tier 7 cap, monthly wage demands and contract-renewal pressure are tested separately; the long-contract benchmark deliberately excludes them.
+- Tier-specific wage caps, monthly wage demands and contract-renewal pressure are tested separately; the long-contract benchmark deliberately excludes them.
 - Fans can outgrow the stadium; expensive expansions consume cash and create higher running costs.
-- The pyramid currently ends at Tier 7 and Tier 8. Deeper divisions remain future work. Player profiles, live halves, ratings, injuries, suspensions, form and morale are now implemented.
+- The pyramid spans Tier 8 through Tier 1. The economic benchmark remains an early-career sample; separate tests exercise all promotion and relegation boundaries. Player profiles, live halves, ratings, injuries, suspensions, form and morale are now implemented.
 
 ## Reproduction
 
@@ -32,3 +32,7 @@ Run `pnpm test` for the complete suite, or `pnpm exec vitest run src/balance.tes
 ## Development and condition correction
 
 First-team training and development loans now improve attack and defence alongside overall ability. Legacy earned growth is restored once on load; academy growth is not credited twice. Opponents use the same fatigue curve as Dragons, with full starting condition assumed for AI teams. The quick simulation samples midpoint condition, while live halves update condition each minute. The benchmark above was regenerated after this correction.
+
+## Eight-tier pyramid
+
+Version 0.3.0 keeps 22 clubs in each of eight connected divisions. Every boundary exchanges the lower champion and playoff winner with the upper bottom two. Higher-tier relegated clubs now enter Tier 7, so the updated early-career benchmark has different opponents after season rollover. Structural tests cover a complete seven-promotion climb and seven-relegation descent, ongoing-playoff migration and single-tier movement for all 176 clubs. The three-season benchmark has a 60-second timeout to accommodate the larger simulated world.

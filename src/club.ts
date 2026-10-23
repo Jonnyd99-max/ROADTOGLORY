@@ -1,5 +1,5 @@
 import {academyUpkeep} from './academy';
-import {division,tierOf,type Tier} from './division';
+import {division,tierOf,groundLimits,type Tier} from './division';
 import {random,transact,type Career,type Fixture,type Player} from './engine';
 
 export type FacilityKind='stadium'|'training'|'recovery'|'food'|'drink';
@@ -29,7 +29,7 @@ export const forecastDemand=(g:Career)=>Math.round(clubState(g).fans*.82+100);
 export function stadiumAdvice(g:Career){const demand=forecastDemand(g),capacity=stadiumCapacity(g);return demand>=capacity?'Demand exceeds capacity — consider expanding.':demand>=capacity*.9?'Close to capacity — monitor your next home crowds.':'Room to grow — your current capacity covers expected demand.'}
 export function trainingChance(g:Career,p:Player){return p.loan||p.age>=25||p.ability>=p.potential?0:Math.min(.8,(g.training==='Youth development'?.22:.08)+(g.selection.includes(p.id)?.06:0)+clubState(g).facilities.training*.04)}
 export const recoveryPoints=(g:Career)=>(g.training==='Recovery'?18:10)+clubState(g).facilities.recovery*3;
-export function upgradeQuote(g:Career,kind:FacilityKind){if(!facilities.includes(kind))throw Error('Unknown facility');const level=clubState(g).facilities[kind];const maxLevel=kind==='stadium'&&tierOf(g)===7?5:3;return{level,maxLevel,maxed:level>=maxLevel,cost:costs[kind][level]??0,currentUpkeep:maintenance[kind][level],nextUpkeep:maintenance[kind][Math.min(maintenance[kind].length-1,level+1)]}}
+export function upgradeQuote(g:Career,kind:FacilityKind){if(!facilities.includes(kind))throw Error('Unknown facility');const level=clubState(g).facilities[kind];const maxLevel=kind==='stadium'&&tierOf(g)<=7?5:3;return{level,maxLevel,maxed:level>=maxLevel,cost:costs[kind][level]??0,currentUpkeep:maintenance[kind][level],nextUpkeep:maintenance[kind][Math.min(maintenance[kind].length-1,level+1)]}}
 export function facilityEffect(g:Career,kind:FacilityKind,next=false){const level=Math.min(kind==='stadium'?5:3,clubState(g).facilities[kind]+(next?1:0));if(kind==='stadium')return`${[1200,1450,1950,2750,4000,5500][level].toLocaleString('en-GB')} capacity`;if(kind==='training')return`+${level*4} percentage points to home development chance`;if(kind==='recovery')return`+${level*3} fitness restored each matchweek`;if(kind==='food')return`£${[0,.55,.9,1.25][level].toFixed(2)} net per home attendee`;return`£${[0,.45,.75,1.05][level].toFixed(2)} net per home attendee`}
 export function upgradeFacility(input:Career,kind:FacilityKind):Career{if(kind==='stadium'&&input.club?.stands)throw Error('Use the stand-by-stand stadium builder');const g=structuredClone(input),state=ensureClub(g),quote=upgradeQuote(g,kind);if(quote.maxed)throw Error('Facility is already fully upgraded');transact(g,`${facilityNames[kind]} · Level ${quote.level+1}`,-quote.cost);state.facilities[kind]++;if(kind==='stadium'){delete state.stands;delete state.stadiumUpkeep;}g.inbox.unshift(`Facility upgraded · ${facilityNames[kind]}\n\nLevel ${state.facilities[kind]} is now operational. ${facilityEffect(g,kind)}. Purchase cost: £${quote.cost.toLocaleString('en-GB')}. Total upkeep for this facility is now £${quote.nextUpkeep} per matchweek.`);return g}
 /** Apply once for the club's completed fixture, independently of match RNG. */
@@ -60,7 +60,7 @@ export function standQuote(g:Career,side:StandSide,style:StandStyle,extra:number
  const stand=stadiumStands(g).find(s=>s.side===side)!;const currentRank=standStyles.indexOf(stand.style),rank=standStyles.indexOf(style);
  if(rank<currentRank)throw Error('Choose the current style or a better stand');
  if(!extra&&rank===currentRank)throw Error('Choose added capacity or a new style');
- const maximum=tierOf(g)===7?5500:2750;
+ const maximum=groundLimits[tierOf(g)];
  if(extra>0&&stadiumCapacity(g)+extra>maximum)throw Error(`Tier ${tierOf(g)} ground limit is ${maximum.toLocaleString('en-GB')} places`);
  const rates=[40,60,90],cost=extra*rates[rank]+stand.capacity*(rates[rank]-rates[currentRank]);
  const extraUpkeep=Math.ceil(extra*.12+(stand.capacity+extra)*rank*.035-stand.capacity*currentRank*.035);

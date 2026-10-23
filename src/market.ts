@@ -13,8 +13,8 @@ export function monthlyMarket(g:Pick<Career,'seed'|'season'|'round'|'postseasonW
  const month=gameMonth(g),seed=g.seed+Number(month.replace('-',''))*7919,r=random(seed),names=new Set<string>();
  return Array.from({length:32},(_,i)=>{
   let name='';do{name=first[Math.floor(r()*first.length)]+' '+last[Math.floor(r()*last.length)]}while(names.has(name));names.add(name);
-  const position=i<4?'GK':i<14?'DEF':i<24?'MID':'FWD',age=17+Math.floor(r()*18),ability=(tierOf(g)===7?43:35)+Math.floor(r()*34),potential=Math.min(90,ability+(age<25?10+Math.floor(r()*23):3+Math.floor(r()*5)));
-  return{id:`market-${month}-${i}`,name,position,age,ability,startingAbility:ability,potential,fitness:100,wage:Math.round((55+Math.floor(r()*100))*(tierOf(g)===7?1.55:1)),contract:1+Math.floor(r()*3),attack:Math.min(99,ability+Math.floor(r()*11)-5),defence:Math.min(99,ability+Math.floor(r()*11)-5)};
+  const position=i<4?'GK':i<14?'DEF':i<24?'MID':'FWD',age=17+Math.floor(r()*18),ability=Math.min(90,(tierOf(g)===8?35:43+(7-tierOf(g))*6)+Math.floor(r()*34)),potential=Math.min(90,ability+(age<25?10+Math.floor(r()*23):3+Math.floor(r()*5)));
+  return{id:`market-${month}-${i}`,name,position,age,ability,startingAbility:ability,potential,fitness:100,wage:Math.round((55+Math.floor(r()*100))*(tierOf(g)===8?1:1.55*Math.pow(1.65,7-tierOf(g)))),contract:1+Math.floor(r()*3),attack:Math.min(99,ability+Math.floor(r()*11)-5),defence:Math.min(99,ability+Math.floor(r()*11)-5)};
  });
 }
 export function refreshMarket(g:Career,notify=true){
