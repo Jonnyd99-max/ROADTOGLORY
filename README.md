@@ -166,3 +166,7 @@ Player potential now has a 99 ceiling, while current ability must still be devel
 ### Version 0.4.1: dimensional club graphics
 
 Custom badges now use layered metal edges, a bevelled rim, lit enamel, embossed symbols and a raised initials plate. Kit rendering adds shaped sleeves and collars, cloth folds, woven texture, seams, trim and matching shorts/socks. The lighting is generated from the chosen colours and works with every crest shape, symbol and kit pattern. Graphics remain responsive local SVG and work offline; saved club designs update automatically without changing career data.
+
+### Version 0.4.2: clearer heraldic symbols
+
+All six crest symbols are redrawn. The dragon now has a horned profile, long snout, bat wing, claws and coiled tail; the lion has a shaped mane and facial detail; the eagle has feathered wings and a hooked profile. The football has panel seams, the star has facets and the castle has towers, windows and an arched gate. Symbols retain chosen colours, embossed materials and automatic updates to existing saved badges and shirt crests.

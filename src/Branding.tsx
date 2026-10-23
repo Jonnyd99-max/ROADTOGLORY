@@ -1,13 +1,50 @@
 import {useId} from 'react';
 import {clubIdentity,type ClubIdentity} from './identity';
 import type {Career} from './engine';
+/** Original heraldic symbols, kept bold enough to read on a shirt-sized crest. */
 function Symbol({icon}:{icon:ClubIdentity['badgeIcon']}){switch(icon){
- case 'Football':return <g fill="none" stroke="currentColor" strokeWidth="3"><circle cx="60" cy="58" r="22"/><path d="m60 44 12 9-5 14H53l-5-14 12-9Zm0-8v8m21 5-9 4m1 23-6-9M47 76l6-9M39 49l9 4"/></g>;
- case 'Star':return <path d="m60 32 7 17 19 2-14 13 4 19-16-10-16 10 4-19-14-13 19-2Z" fill="currentColor"/>;
- case 'Castle':return <path d="M35 37h10v9h10v-9h10v9h10v-9h10v17h-5v30H40V54h-5Zm19 47h12V66H54Z" fill="currentColor" fillRule="evenodd"/>;
- case 'Eagle':return <path d="m60 44-13 9-24-16 12 24 16 7-5 17 14-9 14 9-5-17 16-7 12-24-24 16-9-9 6-8-10-4Z" fill="currentColor"/>;
- case 'Lion':return <g fill="currentColor"><path d="m60 31 10 7 11 1 2 13 6 9-8 10-4 13-17 8-17-8-4-13-8-10 6-9 2-13 11-1Z"/><path d="m45 48 9 3m21-3-9 3m-13 17 7 7 7-7" fill="none" stroke="#171923" strokeWidth="4"/></g>;
- default:return <path d="m39 84 5-18-13-10 17 1 7-12-10-15 18 7 18-5-5 13 12 8-16 5-6 13 12 8-17 1-4 11-7-9Zm24-39 8-2-4 7Z" fill="currentColor" fillRule="evenodd"/>;
+ case 'Dragon':return <g fill="currentColor" strokeLinejoin="round">
+ {/* Swept bat wing, long neck, horned profile and coiled tail. */}
+ <path d="M48 62 29 27Q48 29 62 46L61 30Q78 41 82 56L65 65Z"/>
+ <path d="M43 72C32 67 22 72 21 81c-1 8 10 10 15 4-9 2-11-3-6-6 7-4 13 1 19 0l5-8Zm8-3c-3-9 0-17 8-19 6-2 11 0 14-6l-1-11 9 6 6-12 3 13 12 5-2 8-11 1 7 6-13-1c-5 4-6 9-11 14l5 8 12-2 7 6-10-2-5 4-9-1-9-11-6 1-4 10 10 1 5 5-11-2-6 3-8-5 4-15Z"/>
+ <path d="m70 59 10 7 10-3 7 4-9 1-8 3-12-7Zm-18 9-8 8-8-1-5 5 11-1 9-5Z"/>
+ <path d="m53 49-6-8 1 13m8-1-5-8 1 12m8-2-5-7 1 11" fill="none" stroke="#101a20" strokeOpacity=".65" strokeWidth="1.4"/>
+ <path d="M35 34q18 9 27 24M46 44l-3 12m10-6-1 11m13-15 3 13M64 66q5-8 10-12" fill="none" stroke="#101a20" strokeOpacity=".6" strokeWidth="1.6" strokeLinecap="round"/>
+ <path d="m84 43 6 2-5 3Zm9 6h6l-2 2h-5Z" fill="#101a20"/>
+ <path d="m99 55 5-3-2 5 5 2-7 2 2-3Z" opacity=".9"/>
+ </g>;
+ case 'Lion':return <g fill="currentColor" strokeLinejoin="round">
+ <path d="M60 27 69 32 78 30 82 39 90 44 86 54 92 63 84 70 81 82 69 82 60 90 51 82 39 82 36 70 28 63 34 54 30 44 38 39 42 30 51 32Z"/>
+ <path d="M44 42q-7-10-9 0l6 9m35-9q7-10 9 0l-6 9M45 41q15-9 30 0l-1 23-8 12H54l-8-12Z" fill="none" stroke="#101a20" strokeOpacity=".6" strokeWidth="1.8"/>
+ <path d="m45 49 11 3-7 3Zm30 0-11 3 7 3ZM54 61h12l-6 6Z" fill="#101a20"/>
+ <path d="M60 66v6m0-1q-7 6-12-2m12 2q7 6 12-2M40 59l9 2m-9 5 9-1m31-6-9 2m9 5-9-1M46 76l5 6m23-6-5 6" fill="none" stroke="#101a20" strokeOpacity=".8" strokeWidth="1.7" strokeLinecap="round"/>
+ <path d="M51 43q9-4 18 0" fill="none" stroke="#fff" strokeOpacity=".25" strokeWidth="1.3"/>
+ </g>;
+ case 'Eagle':return <g fill="currentColor" strokeLinejoin="round">
+ <path d="M57 51Q43 48 25 31l1 10 18 15-23-12 5 12 20 8-18-4 7 10 18 1Z"/>
+ <path d="M57 51Q43 48 25 31l1 10 18 15-23-12 5 12 20 8-18-4 7 10 18 1Z" transform="translate(120 0) scale(-1 1)"/>
+ <path d="M55 46q-2-9 7-12l11 5-7 5-3-1q7 12 2 23l7 12-9-3-3 13-3-13-9 3 7-12q-6-11 0-20Z"/>
+ <path d="m54 70-9 6-5-1 3 4 9-2m14-7 9 6 5-1-3 4-9-2" fill="none" stroke="currentColor" strokeWidth="2"/>
+ <path d="m29 39 23 19m-24-7 23 13m40-25L68 58m24-7L69 64M57 48v17m6-17v17" fill="none" stroke="#101a20" strokeOpacity=".45" strokeWidth="1.2"/>
+ <path d="m62 38 4 1-3 2Z" fill="#101a20"/>
+ </g>;
+ case 'Football':return <g>
+ <circle cx="60" cy="58" r="25" fill="currentColor" stroke="currentColor" strokeWidth="1"/>
+ <g fill="#101a20" fillOpacity=".85" stroke="#101a20" strokeWidth="1.2" strokeLinejoin="round"><path d="m60 46 11 8-4 13H53l-4-13Z"/><path d="m49 35-6 11-7 2q3-9 13-13Zm22 0 6 11 7 2q-3-9-13-13ZM36 64l10 3 5 12q-10-4-15-15Zm48 0-10 3-5 12q10-4 15-15ZM55 82l5-9 5 9Z"/><path d="M60 46V34m11 20 12-6m-16 19 7 12m-21-12-7 12m3-25-12-6" fill="none"/></g>
+ <ellipse cx="52" cy="43" rx="8" ry="3" fill="#fff" opacity=".25" transform="rotate(-30 52 43)"/>
+ </g>;
+ case 'Star':return <g fill="currentColor">
+ <path d="m60 28 9 20 22 2-17 15 5 22-19-11-19 11 5-22-17-15 22-2Z"/>
+ <path d="m60 28 1 32 8-12ZM91 50 61 60l13 5ZM79 87 61 60l-1 16ZM41 87 61 60l-15 5ZM29 50 61 60l-10-12Z" fill="#101a20" opacity=".3"/>
+ <path d="m60 28 1 32 30-10M61 60l18 27M61 60 41 87M61 60 29 50" fill="none" stroke="#fff" strokeOpacity=".28" strokeWidth=".8"/>
+ </g>;
+ case 'Castle':return <g fill="currentColor" strokeLinejoin="round">
+ <path d="M29 45h7v7h7v-7h7v21h-4v18h28V66h-4V45h7v7h7v-7h7v21h-4v22H33V66h-4Z"/>
+ <path d="M46 34h7v7h7v-7h7v7h7v-7h7v16h-6v35H51V50h-5Z" transform="translate(-3 0)"/>
+ <path d="M56 88V72a7 7 0 0 1 14 0v16M37 61h5v10h-5m37-10h5v10h-5M56 49h5v10h-5m10-10h5v10h-5" fill="#101a20" opacity=".8"/>
+ <path d="M60 33V23l13 3-13 4" fill="none" stroke="currentColor" strokeWidth="2"/>
+ <path d="M34 78h15m25 0h12M49 62h25M49 65h25" stroke="#101a20" strokeOpacity=".35" strokeWidth="1.1"/>
+ </g>;
 }}
 function tint(hex:string,amount:number){const n=parseInt(hex.slice(1),16);return '#'+[n>>16&255,n>>8&255,n&255].map(c=>Math.round(amount>=0?c+(255-c)*amount:c*(1+amount)).toString(16).padStart(2,'0')).join('')}
 export function Crest({identity:i,className=''}:{identity:ClubIdentity;className?:string}){
