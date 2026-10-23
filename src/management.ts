@@ -1,7 +1,7 @@
 import {settlePlayingTime} from './personality';
 import {clubIdentity} from './identity';
 import {random,type Career,type Player,type Fixture,type Position} from './engine';
-export interface MatchRating {playerId:string;name:string;position:Position;minutes:number;goals:number;assists:number;rating:number;yellow:boolean;red:boolean;injury?:string}
+export interface MatchRating {shots?:number;onTarget?:number;saves?:number;playerId:string;name:string;position:Position;minutes:number;goals:number;assists:number;rating:number;yellow:boolean;red:boolean;injury?:string}
 export const formRating=(p:Player)=>p.recentRatings?.length?p.recentRatings.reduce((a,b)=>a+b,0)/p.recentRatings.length:6.5;
 export const morale=(p:Player)=>p.morale??60;
 export function availability(p:Player){const statuses:string[]=[];if(p.age<16)statuses.push('Youth only · First team from age 16');if(p.loan)statuses.push('On loan');if(p.injury&&p.injury.weeks>0)statuses.push(`${p.injury.name} · ${p.injury.weeks} matchweek${p.injury.weeks===1?'':'s'}`);if((p.suspension??0)>0)statuses.push(`Suspended · ${p.suspension} match${p.suspension===1?'':'es'}`);return statuses.join(' · ')||'Available'}
@@ -24,8 +24,9 @@ export function settlePlayerManagement(g:Career,f:Fixture){
   if(!minutes){if(available(p)){p.unusedMatches=(p.unusedMatches??0)+1;if(!p.squadRole&&p.unusedMatches>2)p.morale=clamp(morale(p)-1,10,95);if(eligibleBefore.has(p.id))settlePlayingTime(p,false)}continue}
   const r=random(g.seed+g.season*1009+f.round*10007+hash(p.id));
   const goals=(f.goals??[]).filter(e=>e.teamId===0&&e.playerId===p.id).length,assists=(f.goals??[]).filter(e=>e.teamId===0&&e.assistId===p.id).length;
+  const shotEvents=f.matchStats?.events.filter(e=>e.playerId===p.id)??[],shots=shotEvents.length,onTarget=shotEvents.filter(e=>e.outcome==='Goal'||e.outcome==='Saved').length,saves=f.matchStats?.events.filter(e=>e.keeperId===p.id&&e.outcome==='Saved').length??0;
   const defensive=p.position==='GK'||p.position==='DEF',clean=against===0&&minutes>=60;
-  const rating=Math.round(clamp(6.2+(win?.4:draw?.05:-.4)+goals*.85+assists*.5+(defensive?(clean?.65:-against*.14):0)+(r()-.5)*1.1,3,10)*10)/10;
+  const rating=Math.round(clamp(6.2+(win?.4:draw?.05:-.4)+goals*.85+assists*.5+(p.position==='GK'?Math.min(.5,saves*.08):0)+(defensive?(clean?.65:-against*.14):0)+(r()-.5)*1.1,3,10)*10)/10;
   const yellow=p.position!=='GK'&&r()<.13,red=p.position!=='GK'&&r()<.006;
   if(yellow){p.yellows=(p.yellows??0)+1;if(p.yellows>=5){p.yellows=0;p.suspension=Math.max(p.suspension??0,1);g.inbox.unshift(`Suspension · ${p.name}\n\nFive bookings: misses the next club match.`)}}
   if(red){p.suspension=Math.max(p.suspension??0,2);g.inbox.unshift(`Suspension · ${p.name}\n\nSent off: a two-match ban starts with the next fixture.`)}
@@ -34,7 +35,7 @@ export function settlePlayerManagement(g:Career,f:Fixture){
   if(!injuryAssigned&&r()<risk){const names=['Bruised ankle','Hamstring strain','Twisted knee'];const weeks=Math.max(1,1+Math.floor(r()*3)-Math.floor(recovery/2));p.injury={name:names[Math.floor(r()*names.length)],weeks};injury=p.injury.name;injuryAssigned=true;g.inbox.unshift(`Medical update · ${p.name}\n\n${injury}: unavailable for ${weeks} matchweek${weeks===1?'':'s'}. Recovery facilities reduce injury risk and lay-off length.`)}
   p.recentRatings=[...(p.recentRatings??[]),rating].slice(-5);p.unusedMatches=0;p.morale=clamp(morale(p)+(win?3:draw?0:-3)+(rating>=7.5?2:rating<5.5?-2:0)+1,10,95);
   if(eligibleBefore.has(p.id))settlePlayingTime(p,(f.starters??g.selection).includes(p.id));
-  ratings.push({playerId:p.id,name:p.name,position:p.position,minutes,goals,assists,rating,yellow,red,injury});
+  ratings.push({playerId:p.id,name:p.name,position:p.position,minutes,goals,assists,rating,yellow,red,injury,...(f.matchStats?{shots,onTarget,saves}:{})});
  }
  f.ratings=ratings;f.playerOfMatch=[...ratings].sort((a,b)=>b.rating-a.rating||b.goals-a.goals||b.minutes-a.minutes||a.playerId.localeCompare(b.playerId))[0]?.playerId;
  if(ratings.length)g.inbox.unshift(`Assistant match report · Matchweek ${f.round+1}\n\n${clubIdentity(g).shortName} player of the match: ${ratings.find(p=>p.playerId===f.playerOfMatch)!.name}.\n${ratings.map(p=>`${p.name}: ${p.rating.toFixed(1)} · ${p.goals} goals · ${p.assists} assists${p.red?' · sent off':p.yellow?' · booked':''}${p.injury?' · '+p.injury:''}`).join('\n')}`);

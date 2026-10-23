@@ -193,3 +193,15 @@ Expiring players aged 38+ are classified as retired without cancelling an existi
 Open Cups, Staff and Supporters from the overview; Cups is also accessible from Fixtures. Team instructions are in Squad & tactics and the live match centre. Youth leagues are not included in this update.
 
 Regression tests use isolated league-only career fixtures for established economy and promotion checks. Expansion tests separately exercise the complete mixed league/cup calendar, extra time, penalties, finances, staff effects, derbies, tactics, migration and IndexedDB save/resume.
+
+
+### Version 0.7.0: match detail and an active transfer market
+
+- All user matches now simulate attacks, shots, blocks, shots on target, saves and goals. Midfield creation, defensive attributes, finishing, keeper ability, fatigue, form and tactics affect different stages. Quick simulation and live halves use the same seeded events.
+- The match centre shows possession, shots, on-target attempts, saves, chances, big chances and expected goals (xG), followed by a result explanation. Shootout kicks are excluded. Player profiles retain recorded shots and saves from this version onward.
+- Existing results remain unchanged. Old fixtures do not receive invented statistics. An older live save records statistics only for the period played after the update, with a clear coverage label.
+- Transfers → Offers & activity contains incoming bids, one counter-offer per bid, accept/reject decisions, transfer listing, player requests and transfer news. Pending offers expire after two league weeks; no owned player is sold automatically. Formation cover, borrowing restrictions, protected academy/free-agent signings, cash and stable player records are preserved.
+- Rival bids are visible on paid-market player cards and affect the fee and wage quote, including role/perk calculations. Rival clubs may sign those players at the stated decision week. Completed rival signings persist and can appear in their new club's match squad.
+- Summer and January deadline weeks generate extra bids, while year-round recruitment remains available. Free-agent and loan pools retain their annual refresh. Market news is included in the existing weekly digest; cups do not generate an extra market week.
+
+Run the existing setup commands above for the local preview. `pnpm test` includes deterministic shooting/keeper/defence tests, transfer fees and counter-offers, expiry, rival signings, player reactions, migrations and IndexedDB resume checks. Tests use at most two workers to keep the larger seeded suite predictable on laptops. Deployment remains manual.

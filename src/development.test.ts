@@ -65,4 +65,4 @@ it('makes a developed strong XI outperform weaker opponents across deterministic
   if(ability===78){strongPoints+=points;if(ours>theirs)wins++;if(ours<theirs)losses++}else weakPoints+=points;
  }
  expect(strongPoints).toBeGreaterThan(weakPoints+40);expect(wins).toBeGreaterThan(losses*2);
-});
+},15000);

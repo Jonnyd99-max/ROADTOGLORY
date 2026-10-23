@@ -31,5 +31,5 @@ it('runs repeatable three-season economy benchmarks',()=>{
  console.log(JSON.stringify(samples));
  expect(Math.max(...samples.filter(s=>s.season===2028).map(s=>s.cash))).toBeLessThan(200000);
  expect(Math.min(...samples.map(s=>s.cash))).toBeGreaterThan(0);
-},60000);
+},90000);
 

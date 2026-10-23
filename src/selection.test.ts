@@ -1,8 +1,9 @@
+import {marketAsking,marketFee} from './activeMarket';
 import {newCareer} from './testCareer';
 import {it,expect} from 'vitest';
 import {orderedSquad,assistantPick,validTeam,positionOrder,signPlayer} from './engine';
 it('groups a new signing with his position and orders by current ability',()=>{
- const initial=newCareer(),p=initial.market[0],g=signPlayer(initial,p.id,p.ability*110,p.wage,2),snapshot=structuredClone(g.squad);
+ const initial=newCareer(),p=initial.market[0],g=signPlayer(initial,p.id,marketFee(initial,p),marketAsking(initial,p),2),snapshot=structuredClone(g.squad);
  const sorted=orderedSquad(g.squad);expect(g.squad).toEqual(snapshot);
  expect(sorted.map(p=>positionOrder.indexOf(p.position))).toEqual(sorted.map(p=>positionOrder.indexOf(p.position)).sort((a,b)=>a-b));
  for(const pos of positionOrder){const group=sorted.filter(p=>p.position===pos);expect(group.map(p=>p.ability)).toEqual(group.map(p=>p.ability).sort((a,b)=>b-a))}

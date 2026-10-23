@@ -4,11 +4,11 @@ Five deterministic careers, three seasons each. New matchdays simulate all eight
 
 | Seed | Previous year-three cash | Current year-three cash | Current fanbase | Current tier / finish | Average ability |
 | --- | ---: | ---: | ---: | --- | ---: |
-| 17 | £895,235 | £77,020 | 3,882 | Tier 8 / 2 | 60.7 |
-| 81 | £741,281 | £82,477 | 3,973 | Tier 8 / 3 | 59.3 |
-| 2026 | £761,789 | £75,335 | 3,789 | Tier 8 / 2 | 57.5 |
-| 2040 | £727,983 | £80,145 | 3,724 | Tier 8 / 2 | 56.5 |
-| 9901 | £919,471 | £63,702 | 3,287 | Tier 8 / 5 | 59.6 |
+| 17 | £895,235 | £67,613 | 3,660 | Tier 7 / 20 | 60.7 |
+| 81 | £741,281 | £117,933 | 4,307 | Tier 8 / 1 | 59.3 |
+| 2026 | £761,789 | £67,759 | 3,593 | Tier 8 / 6 | 57.5 |
+| 2040 | £727,983 | £110,367 | 3,907 | Tier 8 / 5 | 56.5 |
+| 9901 | £919,471 | £70,539 | 3,491 | Tier 8 / 3 | 59.6 |
 
 ## Method and findings
 
@@ -31,12 +31,19 @@ Run `pnpm test` for the complete suite, or `pnpm exec vitest run src/balance.tes
 
 ## Development and condition correction
 
-First-team training and development loans now improve attack and defence alongside overall ability. Legacy earned growth is restored once on load; academy growth is not credited twice. Opponents use the same fatigue curve as Dragons, with full starting condition assumed for AI teams. The quick simulation samples midpoint condition, while live halves update condition each minute. The benchmark above was regenerated after this correction.
+First-team training and development loans now improve attack and defence alongside overall ability. Legacy earned growth is restored once on load; academy growth is not credited twice. Opponents use the same fatigue curve as Dragons, with full starting condition assumed for AI teams. Quick user matches and live halves now share the same minute-by-minute shot engine. Background AI-only games use midpoint team condition and retain their final result rather than detailed event logs to keep saves small. The benchmark above was regenerated after this correction.
 
 ## Eight-tier pyramid
 
-Version 0.3.0 keeps 22 clubs in each of eight connected divisions. Every boundary exchanges the lower champion and playoff winner with the upper bottom two. Higher-tier relegated clubs now enter Tier 7, so the updated early-career benchmark has different opponents after season rollover. Structural tests cover a complete seven-promotion climb and seven-relegation descent, ongoing-playoff migration and single-tier movement for all 176 clubs. The three-season benchmark has a 60-second timeout to accommodate the larger simulated world.
+Version 0.3.0 keeps 22 clubs in each of eight connected divisions. Every boundary exchanges the lower champion and playoff winner with the upper bottom two. Higher-tier relegated clubs now enter Tier 7, so the updated early-career benchmark has different opponents after season rollover. Structural tests cover a complete seven-promotion climb and seven-relegation descent, ongoing-playoff migration and single-tier movement for all 176 clubs. The three-season benchmark has a 90-second timeout to accommodate the larger simulated world.
 
 ## Age fatigue and rotation
 
 Version 0.3.1 applies age-dependent fatigue, recovery and actual substitute minutes. The benchmark now uses the default 50/30/20 Balanced assistant selection. The five starting squads remain solvent, but take longer to earn promotion while the controlled benchmark forbids recruitment. This is a bounded early-career sample rather than an all-tier balance guarantee.
+
+
+## Version 0.7.0 shooting and market simulation
+
+The table above was regenerated with the shot-based engine and active rival market. No user player sales or recruitment are made in this benchmark; rival clubs can recruit market targets, and user bids are allowed to expire. Cup entry is deliberately deferred in this league economy fixture; the separate mixed-calendar test covers league/cup settlement.
+
+All five sampled careers remain solvent and reconcile exactly to their ledgers. Different shot outcomes and rival recruitment change results and promotion paths, so the values are a milestone comparison rather than an isolated financial-rule experiment. Dedicated seeded tests vary goalkeeper ability, finishing and defending independently. The two-worker test limit avoids competition between the Monte Carlo checks and this larger benchmark on laptops.

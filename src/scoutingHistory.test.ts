@@ -1,3 +1,4 @@
+import {marketAsking,marketFee} from './activeMarket';
 import {newCareer,nextSeason} from './testCareer';
 import {it,expect} from 'vitest';
 import 'fake-indexeddb/auto';
@@ -24,7 +25,7 @@ it('generates stable personalities and gives family players appropriate perk pre
  const g=newCareer();let id='';for(let n=0;n<1000;n++)if(personality({id:'person-'+n})==='Family-focused'){id='person-'+n;break}expect(id).not.toBe('');expect(personality({id})).toBe(personality({id}));expect(perkAffinity({id},'holiday')).toBeGreaterThan(perkAffinity({id},'car'));expect(g.squad.map(personality)).toEqual(newCareer().squad.map(personality));
 });
 it('negotiates role promises consistently with quoted wages and preserves source state on rejection',()=>{
- const g=newCareer(),p=g.market[0],q=wageQuote(p,p.wage,2,'holiday','Key player'),out=signPlayer(g,p.id,p.ability*110,q.minimum,2,'holiday','Key player');expect(out.squad.find(x=>x.id===p.id)?.squadRole).toBe('Key player');expect(()=>signPlayer(g,p.id,p.ability*110,q.minimum-1,2,'holiday','Key player')).toThrow('Counter-offer');expect(g.squad).toHaveLength(22);
+ const g=newCareer(),p=g.market[0],q=wageQuote(p,marketAsking(g,p),2,'holiday','Key player'),out=signPlayer(g,p.id,marketFee(g,p),q.minimum,2,'holiday','Key player');expect(out.squad.find(x=>x.id===p.id)?.squadRole).toBe('Key player');expect(()=>signPlayer(g,p.id,marketFee(g,p),q.minimum-1,2,'holiday','Key player')).toThrow('Counter-offer');expect(g.squad).toHaveLength(22);
 });
 it('changes morale for fulfilled and unmet promises while exempting unavailable games',()=>{
  const g=newCareer(),p=g.squad[0];p.squadRole='Key player';p.morale=60;for(let n=0;n<6;n++)settlePlayingTime(p,false);expect(p.morale).toBeLessThan(60);p.roleHistory=[];p.morale=60;for(let n=0;n<6;n++)settlePlayingTime(p,true);expect(p.morale).toBeGreaterThan(60);

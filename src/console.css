@@ -61,3 +61,10 @@ nav button>.nav-caption{height:auto;display:block;line-height:1.2;width:auto;fon
 @media(max-width:600px) { .supporter-metrics { grid-template-columns:1fr; } .supporter-metrics span { padding:12px; } }
 
 .cup-tie-note { margin:0 0 8px; padding:6px 12px; text-align:center; color:#ead58c; font-size:12px; background:#1e2342; border-radius:0 0 6px 6px; }
+
+.match-numbers {margin:20px 0;padding:16px;border:1px solid #7379a0;border-radius:12px;background:linear-gradient(135deg,#343b61,#222746);}
+.match-number-row {display:grid;grid-template-columns:minmax(45px,1fr) minmax(120px,2fr) minmax(45px,1fr);gap:8px;text-align:center;padding:9px 0;border-bottom:1px solid #65709955;}
+.match-number-row b {color:#f1db8e;font-size:18px;}.match-number-row span {color:#d3d8ed;}.match-number-header b {font-size:12px;color:#b8c4dd;}.match-numbers li {margin:8px 0;line-height:1.5;}
+.rival-interest {border-left:3px solid #ead181;background:#1e2442;padding:12px;margin:12px 0;display:grid;gap:8px;}.rival-interest strong{color:#f0d88a;}.rival-interest small{line-height:1.5;}
+.bid-amount{display:block;color:#edd78b;font-size:28px;margin:12px 0;}.bid-card .controls{margin-top:16px;}.request-row{padding:14px 0;border-top:1px solid #68719566;}.transfer-news{padding:12px;background:#222747;border-radius:6px;line-height:1.5;}
+@media(max-width:600px){.bid-card .button-row{display:grid;}.match-numbers{padding:12px;}.match-number-row{font-size:13px;}.bid-card .controls{display:grid;}}

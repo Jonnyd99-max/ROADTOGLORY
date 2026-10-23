@@ -1,3 +1,4 @@
+import {playoffPending,playPlayoff} from './competition';
 import {newCareer,nextSeason} from './testCareer';
 import {it,expect} from 'vitest';
 import 'fake-indexeddb/auto';
@@ -10,7 +11,7 @@ it('generates a repeatable 32-player monthly market across every position',()=>{
  expect(new Set(g.market.map(p=>p.id)).size).toBe(32);expect(new Set(g.market.map(p=>p.name)).size).toBe(32);
  expect(new Set(g.market.map(p=>p.position)).size).toBe(4);
  expect(monthlyMarket({...g,seed:42})).not.toEqual(g.market);
- let next=g;for(let i=0;i<3;i++)next=playRound(assistantPick(next));expect(next.market).toEqual(g.market);
+ let next=g;for(let i=0;i<3;i++)next=playRound(assistantPick(next));expect(next.market).toEqual(g.market.filter(p=>!next.transferActivity?.aiPlayers.some(x=>x.player.id===p.id)));expect(next.market.length).toBeLessThanOrEqual(32);
  next=playRound(assistantPick(next));expect(gameMonth(next)).toBe('2026-09');expect(next.market).toHaveLength(32);
  expect(next.market.every(p=>!g.market.some(old=>old.id===p.id))).toBe(true);
  const snapshot=structuredClone(next);refreshMarket(next);expect(next).toEqual(snapshot);
@@ -53,6 +54,6 @@ it('recalls cleanly, caps growth at potential, and finishes late-season loans be
  g=recallPlayer(g,id);expect(g.squad[0].loan).toBeUndefined();expect(()=>recallPlayer(g,id)).toThrow('not on loan');
  const after=playRound(g);expect(after.ledger.filter(t=>t.label.startsWith('Loan wage'))).toHaveLength(1);
  let late={...newCareer(),round:40};late=assistantPick(loanPlayer(late,id,12));expect(late.squad[0].loan!.returnRound).toBe(42);
- late=playRound(playRound(late));expect(late.squad[0].loan).toBeUndefined();expect(nextSeason(late).squad.every(p=>!p.loan)).toBe(true);
+ late=playRound(playRound(late));expect(late.squad[0].loan).toBeUndefined();while(playoffPending(late))late=playPlayoff(assistantPick(late));expect(nextSeason(late).squad.every(p=>!p.loan)).toBe(true);
  expect(()=>loanPlayer({...newCareer(),round:42},id,4)).toThrow('next season');expect(()=>loanPlayer(start,id,3)).toThrow('4, 8 or 12');
 });
