@@ -52,3 +52,12 @@ nav button>.nav-caption{height:auto;display:block;line-height:1.2;width:auto;fon
 .designer-preview>.crest-sculpted{width:140px;height:160px}.designer-preview .kit-sculpted{height:225px;width:auto;max-width:48%}.designer-preview h2{margin:12px 0}.designer-preview p{margin:8px 0}.designer-preview .custom-kit-pair{padding-top:4px}
 
 .scout-summary{border-top:1px solid #667297;padding:10px 0;margin-top:10px}.scout-summary small{display:block;font-size:10px;color:#b7bfd1;margin:5px 0}.personality-info{font-size:12px}.personality-info p{line-height:1.5}.legacy-summary{display:flex;flex-wrap:wrap;gap:24px;margin:20px 0}.legacy-summary span{display:flex;align-items:center;gap:8px}.legacy-summary b{font-size:25px;color:#e0ba65}.honours-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:15px}.honours-grid article{display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;border:1px solid #8d7849;border-radius:10px;padding:22px;background:linear-gradient(145deg,#41445a,#20253e);color:#e0ba65}.record-result{display:flex;flex-direction:column;gap:9px;margin:22px 0}.record-result small{color:#b7bfd1;letter-spacing:1px}.scout-desk summary{cursor:pointer;color:#e0ba65}
+
+/* Club expansion screens retain the console frame with readable summary metrics. */
+.expansion-links { margin: 0 0 16px; flex-wrap: wrap; }
+.supporter-metrics { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin:20px 0; }
+.supporter-metrics span { padding:16px; border:1px solid #7076a0; border-radius:10px; background:linear-gradient(#41496e,#252b4d); color:#c6cce1; font-size:13px; }
+.supporter-metrics b { display:block; margin-top:8px; color:#f0d88a; font-size:23px; line-height:1.25; }
+@media(max-width:600px) { .supporter-metrics { grid-template-columns:1fr; } .supporter-metrics span { padding:12px; } }
+
+.cup-tie-note { margin:0 0 8px; padding:6px 12px; text-align:center; color:#ead58c; font-size:12px; background:#1e2342; border-radius:0 0 6px 6px; }

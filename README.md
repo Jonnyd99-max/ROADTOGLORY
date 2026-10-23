@@ -180,3 +180,16 @@ All six crest symbols are redrawn. The dragon now has a horned profile, long sno
 **Overview / Career → Club history & records:** league titles and promotion-playoff honours are derived from recorded season outcomes. The archive stores named club results, all-time scorers, appearances and assists, and retains player contributions after sales, expired contracts and incoming-loan returns. Biggest-win/defeat records use goal margin, then goals scored/conceded. Match records are keyed by season and fixture to prevent duplicates. Playoff regulation scores count; penalties do not invent extra goals.
 
 Expiring players aged 38+ are classified as retired without cancelling an existing contract early. Retired players with at least 100 recorded club appearances or 50 goals enter the legends section automatically. Younger expired contracts are classified as released. Existing saves import available current-season results and owned players’ existing season stats. Older results and departed players that were never saved cannot be reconstructed; the history screen states that limit. Career renaming does not rewrite archived opponent names.
+
+
+### Version 0.6.0: club management expansion
+
+- Regional Cup: 16 clubs, four knockout rounds on Wednesdays after league weeks 4, 12, 22 and 32. Drawn ties receive 30 minutes of extra time, then deterministic penalties. Cup games add fatigue, appearance records, commercial income and tier-scaled prize money; they do not alter league points or charge a second weekly wage/upkeep bill.
+- Existing saves that have reached week four enter the cup next season. Earlier careers join the current draw. Cup progress, pending matches and honours save locally.
+- Staff: recruit one assistant, coach, scout and physio. Candidates refresh each season; signed staff remain employed. Staff quality affects match preparation, development, estimate precision and recovery. Hiring/replacing and dismissal cost two weeks of wages. Staff wages appear separately in the ledger.
+- Supporters: season expectations reflect starting squad strength. Local derbies lift home demand by 20% within capacity and double fan/confidence reactions. Confidence and season targets appear on the Supporters screen.
+- Tactics: pressing, defensive line, tempo and individual attack/defend duties affect chances, risk and fatigue. Change instructions before kick-off or at half-time. Match reports record the final instructions and live changes.
+
+Open Cups, Staff and Supporters from the overview; Cups is also accessible from Fixtures. Team instructions are in Squad & tactics and the live match centre. Youth leagues are not included in this update.
+
+Regression tests use isolated league-only career fixtures for established economy and promotion checks. Expansion tests separately exercise the complete mixed league/cup calendar, extra time, penalties, finances, staff effects, derbies, tactics, migration and IndexedDB save/resume.

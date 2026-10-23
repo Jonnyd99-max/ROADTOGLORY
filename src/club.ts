@@ -1,3 +1,4 @@
+import {staffQuality,isDerby,supporterReaction} from './clubSystems';
 import {clubIdentity} from './identity';
 import {academyUpkeep} from './academy';
 import {division,tierOf,groundLimits,type Tier} from './division';
@@ -28,8 +29,8 @@ export const weeklyUpkeep=(g:Career)=>facilities.reduce((n,kind)=>n+(kind==='sta
 export const clubRunningCosts=(g:Career)=>division(g).runningBase+Math.round(stadiumCapacity(g)*division(g).costPerSeat);
 export const forecastDemand=(g:Career)=>Math.round(clubState(g).fans*.82+100);
 export function stadiumAdvice(g:Career){const demand=forecastDemand(g),capacity=stadiumCapacity(g);return demand>=capacity?'Demand exceeds capacity — consider expanding.':demand>=capacity*.9?'Close to capacity — monitor your next home crowds.':'Room to grow — your current capacity covers expected demand.'}
-export function trainingChance(g:Career,p:Player){return p.loan||p.age>=25||p.ability>=p.potential?0:Math.min(.8,(g.training==='Youth development'?.22:.08)+(g.selection.includes(p.id)?.06:0)+clubState(g).facilities.training*.04)}
-export const recoveryPoints=(g:Career)=>(g.training==='Recovery'?18:10)+clubState(g).facilities.recovery*3;
+export function trainingChance(g:Career,p:Player){return p.loan||p.age>=25||p.ability>=p.potential?0:Math.min(.8,(g.training==='Youth development'?.22:.08)+(g.selection.includes(p.id)?.06:0)+clubState(g).facilities.training*.04+staffQuality(g,'Coach')/1000)}
+export const recoveryPoints=(g:Career)=>(g.training==='Recovery'?18:10)+clubState(g).facilities.recovery*3+Math.floor(staffQuality(g,'Physio')/20);
 export function upgradeQuote(g:Career,kind:FacilityKind){if(!facilities.includes(kind))throw Error('Unknown facility');const level=clubState(g).facilities[kind];const maxLevel=kind==='stadium'&&tierOf(g)<=7?5:3;return{level,maxLevel,maxed:level>=maxLevel,cost:costs[kind][level]??0,currentUpkeep:maintenance[kind][level],nextUpkeep:maintenance[kind][Math.min(maintenance[kind].length-1,level+1)]}}
 export function facilityEffect(g:Career,kind:FacilityKind,next=false){const level=Math.min(kind==='stadium'?5:3,clubState(g).facilities[kind]+(next?1:0));if(kind==='stadium')return`${[1200,1450,1950,2750,4000,5500][level].toLocaleString('en-GB')} capacity`;if(kind==='training')return`+${level*4} percentage points to home development chance`;if(kind==='recovery')return`+${level*3} fitness restored each matchweek`;if(kind==='food')return`£${[0,.55,.9,1.25][level].toFixed(2)} net per home attendee`;return`£${[0,.45,.75,1.05][level].toFixed(2)} net per home attendee`}
 export const facilityName=(g:Career,kind:FacilityKind)=>kind==='training'?clubIdentity(g).trainingName:facilityNames[kind];
@@ -38,16 +39,16 @@ export function upgradeFacility(input:Career,kind:FacilityKind):Career{if(kind==
 export function processClubMatch(g:Career,f:Fixture){
  if(!f.score||(f.home!==0&&f.away!==0))throw Error('Completed club fixture required');
  const config=division(g),deal=sponsorFor(g),state=ensureClub(g);if(state.history.some(x=>x.season===g.season&&x.round===f.round))throw Error('Matchday finances already processed');
- const home=f.home===0,[goals,against]=home?f.score:[f.score[1],f.score[0]],result=goals>against?'win':goals===against?'draw':'loss',r=random(g.seed+g.season*31+f.round*509+2027);
- const fansBefore=state.fans,capacity=stadiumCapacity(g),demand=home?Math.round(fansBefore*(.74+r()*.16)+60+r()*50):0,attendance=Math.min(capacity,demand),turnedAway=Math.max(0,demand-capacity);
+ const home=f.home===0,[goals,against]=home?f.score:[f.score[1],f.score[0]],result=f.competition==='cup'&&f.winner!==undefined?(f.winner===0?'win':'loss'):goals>against?'win':goals===against?'draw':'loss',r=random(g.seed+g.season*31+f.round*509+2027);
+ const fansBefore=state.fans,capacity=stadiumCapacity(g),demand=home?Math.round( (fansBefore*(.74+r()*.16)+60+r()*50)*(isDerby(g,f)?1.2:1)):0,attendance=Math.min(capacity,demand),turnedAway=Math.max(0,demand-capacity);
  const tickets=attendance*config.ticketPrice,food=Math.floor(attendance*[0,.55,.9,1.25][state.facilities.food]),drink=Math.floor(attendance*[0,.45,.75,1.05][state.facilities.drink]);
- const sponsorBonus=result==='win'?deal.winBonus:result==='draw'?deal.drawBonus:0,upkeep=weeklyUpkeep(g),runningCosts=clubRunningCosts(g),matchCosts=home?Math.round(attendance*config.costPerAttendee):0;
+ const sponsorBonus=result==='win'?deal.winBonus:result==='draw'?deal.drawBonus:0,upkeep=f.competition==='cup'?0:weeklyUpkeep(g),runningCosts=f.competition==='cup'?0:clubRunningCosts(g),matchCosts=home?Math.round(attendance*config.costPerAttendee):0;
  if(home){transact(g,`${attendance} tickets × £${config.ticketPrice}`,tickets);if(food)transact(g,'Food concession · net sales',food);if(drink)transact(g,'Drink concession · net sales',drink)}
  transact(g,`${deal.name} · Tier ${deal.tier} match payment`,deal.base);if(sponsorBonus)transact(g,`${deal.name} · ${result} bonus`,sponsorBonus);
  if(upkeep){g.cash-=upkeep;g.ledger.unshift({round:g.round,label:'Facilities upkeep',amount:-upkeep})}
  for(const [label,cost] of [['Club running costs',runningCosts],['Matchday operations',matchCosts]] as const){if(cost){g.cash-=cost;g.ledger.unshift({round:g.round,label,amount:-cost})}}
- state.fans=Math.max(250,state.fans+fanChange(result,g));
- state.history.unshift({season:g.season,round:f.round,home,result,fansBefore,fansAfter:state.fans,capacity,demand,attendance,turnedAway,tickets,food,drink,sponsorBase:deal.base,sponsorBonus,upkeep,runningCosts,matchCosts,ticketPrice:config.ticketPrice,tier:deal.tier});state.history=state.history.slice(0,84);
+ state.fans=Math.max(250,state.fans+fanChange(result,g)*(isDerby(g,f)?2:1));
+ state.history.unshift({season:g.season,round:f.round,home,result,fansBefore,fansAfter:state.fans,capacity,demand,attendance,turnedAway,tickets,food,drink,sponsorBase:deal.base,sponsorBonus,upkeep,runningCosts,matchCosts,ticketPrice:config.ticketPrice,tier:deal.tier});state.history=state.history.slice(0,84);supporterReaction(g,f);
  g.inbox.unshift(`Club & commercial report · Matchweek ${f.round+1}\n\nFanbase: ${fansBefore.toLocaleString('en-GB')} → ${state.fans.toLocaleString('en-GB')} (${state.fans-fansBefore>=0?'+':''}${state.fans-fansBefore}).\n${home?`Attendance: ${attendance.toLocaleString('en-GB')} / ${capacity.toLocaleString('en-GB')}. Unmet demand: ${turnedAway.toLocaleString('en-GB')}.\nTicket income: £${tickets.toLocaleString('en-GB')}. Food net income: £${food}. Drink net income: £${drink}.`:'Away fixture: no home gate or concession income.'}\nSponsor: £${deal.base} match payment + £${sponsorBonus} result bonus.\nFacilities upkeep: £${upkeep}. Running costs: £${runningCosts}. Matchday operations: £${matchCosts}.\n\n${stadiumAdvice(g)}`);
 }
 

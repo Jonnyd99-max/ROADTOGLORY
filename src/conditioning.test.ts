@@ -1,6 +1,7 @@
+import {newCareer} from './testCareer';
 import {it,expect} from 'vitest';
 import 'fake-indexeddb/auto';
-import {newCareer,finishWeek,assistantPick,type Player} from './engine';
+import {finishWeek,assistantPick,type Player} from './engine';
 import {matchFatigue,ageRecovery,matchFitness} from './conditioning';
 import {selectionModes,selectionScore} from './management';
 import {startMatch,playHalf,substitute,simulateGame} from './match';

@@ -16,8 +16,8 @@ const clamp=(n:number,low:number,high:number)=>Math.max(low,Math.min(high,n));
 /** Called once at settlement. Existing absences serve this fixture; new absences start next fixture. */
 export function settlePlayerManagement(g:Career,f:Fixture){
  const eligibleBefore=new Set(g.squad.filter(available).map(p=>p.id));
- const ours=f.score![f.home===0?0:1],against=f.score![f.home===0?1:0],win=ours>against,draw=ours===against;
- for(const p of g.squad){if(p.injury){p.injury.weeks--;if(p.injury.weeks<=0){delete p.injury;g.inbox.unshift(`Medical update · ${p.name}\n\nFit to return to the squad.`)}}if(p.suspension)p.suspension=Math.max(0,p.suspension-1)}
+ const ours=f.score![f.home===0?0:1],against=f.score![f.home===0?1:0],win=f.winner!==undefined?f.winner===0:ours>against,draw=f.winner===undefined&&ours===against;
+ for(const p of g.squad){if(p.injury&&f.competition!=='cup'){p.injury.weeks--;if(p.injury.weeks<=0){delete p.injury;g.inbox.unshift(`Medical update · ${p.name}\n\nFit to return to the squad.`)}}if(p.suspension)p.suspension=Math.max(0,p.suspension-1)}
  for(const [i,goal] of (f.goals??[]).entries()){if(goal.teamId!==0||goal.assistRecorded)continue;if(f.minutes){goal.assistRecorded=true;continue}const helpers=g.squad.filter(p=>p.position!=='GK'&&p.id!==goal.playerId&&(f.starters??g.selection).includes(p.id));const r=random(g.seed+f.round*73+i*311);const helper=helpers[Math.floor(r()*helpers.length)];if(helper&&r()<.8){goal.assistId=helper.id;goal.assistName=helper.name}goal.assistRecorded=true}
  const ratings:MatchRating[]=[];let injuryAssigned=false;
  for(const p of g.squad){const minutes=f.minutes?.[p.id]??((f.starters??g.selection).includes(p.id)?90:0);if(p.loan)continue;

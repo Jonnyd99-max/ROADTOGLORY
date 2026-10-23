@@ -1,5 +1,6 @@
+import {newCareer,nextSeason} from './testCareer';
 import {it,expect} from 'vitest';
-import {assistantPick,newCareer,playRound,table,nextSeason,signPlayer,renew,validTeam} from './engine';
+import {assistantPick,playRound,table,signPlayer,renew,validTeam} from './engine';
 import {saveCareer,loadCareer} from './storage';
 import 'fake-indexeddb/auto';
 it('completes a full season and processes ageing and contracts',()=>{let g=newCareer(81);for(let i=0;i<42;i++)g=playRound(assistantPick(g));expect(g.fixtures.every(f=>f.score)).toBe(true);expect(table(g).every(t=>t.played===42)).toBe(true);expect(()=>playRound(g)).toThrow('Season complete');const next=nextSeason(g);expect(next.season).toBe(2027);expect(next.fixtures.every(f=>!f.score)).toBe(true);for(const p of next.squad){const old=g.squad.find(x=>x.id===p.id)!;expect(p.age).toBe(old.age+1);expect(p.contract).toBe(old.contract-1)}});

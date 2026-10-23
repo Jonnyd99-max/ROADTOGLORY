@@ -1,6 +1,7 @@
+import {newCareer} from './testCareer';
 import {it,expect} from 'vitest';
 import 'fake-indexeddb/auto';
-import {newCareer,table,type Career} from './engine';
+import {table,type Career} from './engine';
 import {startMatch,advanceMatch,finishMatch,substitute,changeMentality,goalRecords} from './match';
 import {saveCareer,loadCareer} from './storage';
 const full=(g:Career)=>{for(let i=0;i<6;i++)g=advanceMatch(g);return g};

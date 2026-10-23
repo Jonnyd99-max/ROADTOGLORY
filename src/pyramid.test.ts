@@ -1,6 +1,7 @@
+import {newCareer,nextSeason} from './testCareer';
 import {it,expect} from 'vitest';
 import 'fake-indexeddb/auto';
-import {newCareer,playRound,nextSeason,migrateCareer,table,assistantPick,type Career} from './engine';
+import {playRound,migrateCareer,table,assistantPick,type Career} from './engine';
 import {leagueDivisions,fixturesFor,prepareFinale,playPlayoff,playoffPending} from './competition';
 import {tiers,divisions,type Tier} from './division';
 import {saveCareer,loadCareer} from './storage';

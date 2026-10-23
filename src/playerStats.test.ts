@@ -1,6 +1,7 @@
+import {newCareer} from './testCareer';
 import {it,expect} from 'vitest';
 import 'fake-indexeddb/auto';
-import {newCareer,type Career} from './engine';
+import {type Career} from './engine';
 import {startMatch,playHalf,simulateGame,substitute,finishMatch,advanceMatch} from './match';
 import {playerTotals,recordPlayerMatch} from './playerStats';
 import {saveCareer,loadCareer} from './storage';

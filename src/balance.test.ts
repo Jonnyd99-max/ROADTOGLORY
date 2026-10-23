@@ -1,6 +1,7 @@
+import {newCareer,nextSeason} from './testCareer';
 import {it,expect} from 'vitest';
 import {writeFileSync,mkdirSync} from 'node:fs';
-import {newCareer,assistantPick,playRound,nextSeason,table,type Career} from './engine';
+import {assistantPick,playRound,table,type Career} from './engine';
 import {playoffPending,playPlayoff} from './competition';
 import {clubState,upgradeFacility,forecastDemand,stadiumCapacity} from './club';
 

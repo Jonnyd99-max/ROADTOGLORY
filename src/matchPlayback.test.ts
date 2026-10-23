@@ -1,5 +1,6 @@
+import {newCareer} from './testCareer';
 import {it,expect} from 'vitest';
-import {newCareer,type Fixture} from './engine';
+import {type Fixture} from './engine';
 import {beginPlayback,tickPlayback,playbackGoals,playbackScore,commentaryLine,CLIP_TIME,SHOT_TIME} from './matchPlayback';
 const fixture:Fixture={round:0,home:0,away:1,score:[2,1],goals:[{minute:12,teamId:0,playerName:'Walsh'},{minute:12,teamId:1,playerName:'Mercer'},{minute:45,teamId:0,playerName:'Turner'}]};
 it('plays all three goals exactly once, including two in the same minute and one at half time',()=>{const goals=playbackGoals(fixture,0,45);let state=beginPlayback(0);const seen:number[]=[];for(let i=0;i<1000&&state.phase!=='complete';i++){const next=tickPlayback(state,goals,45,.05);if(next.phase==='goal'&&state.phase!=='goal')seen.push(next.nextGoal);state=next}expect(seen).toEqual([0,1,2]);expect(state).toMatchObject({phase:'complete',second:2700,shown:3});expect(playbackScore(fixture,state,0,goals)).toEqual([2,1])});

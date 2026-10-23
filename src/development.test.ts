@@ -1,6 +1,7 @@
+import {newCareer} from './testCareer';
 import {it,expect} from 'vitest';
 import 'fake-indexeddb/auto';
-import {assistantPick,abilitySegments,newCareer,playRound,migrateCareer,mailId,markMailRead,unreadCount} from './engine';
+import {assistantPick,abilitySegments,playRound,migrateCareer,mailId,markMailRead,unreadCount} from './engine';
 import {saveCareer,loadCareer} from './storage';
 
 it('preserves starting ratings while training and games produce visible earned growth',async()=>{

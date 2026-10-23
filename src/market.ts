@@ -1,3 +1,4 @@
+import {cupPending} from './cup';
 import {archivePlayer} from './clubHistory';
 import {changeAbility} from './development';
 import {available} from './management';
@@ -5,8 +6,8 @@ import {tierOf,division} from './division';
 import {assistantPick,random,transact,type Career,type Player} from './engine';
 
 export interface Loan {club:string;startRound:number;returnRound:number;startingAbility:number;weeksPlayed:number;wageShare:number}
-export const gameDate=(g:Pick<Career,'season'|'round'|'postseasonWeeks'>)=>new Date(Date.UTC(g.season,7,8+(g.round+(g.postseasonWeeks??0))*7));
-export const gameMonth=(g:Pick<Career,'season'|'round'|'postseasonWeeks'>)=>gameDate(g).toISOString().slice(0,7);
+export const gameDate=(g:Pick<Career,'season'|'round'|'postseasonWeeks'> & Partial<Pick<Career,'cup'>>)=>new Date(Date.UTC(g.season,7,8+(g.round+(g.postseasonWeeks??0))*7-(g.cup&&cupPending(g as Career)?3:0)));
+export const gameMonth=(g:Pick<Career,'season'|'round'|'postseasonWeeks'>)=>new Date(Date.UTC(g.season,7,8+(g.round+(g.postseasonWeeks??0))*7)).toISOString().slice(0,7);
 export function nextMarketDate(g:Career){const date=gameDate(g);return new Date(Date.UTC(date.getUTCFullYear(),date.getUTCMonth()+1,1))}
 const first=['Adam','Alex','Ben','Callum','Daniel','Ellis','Felix','Harvey','Idris','Jamie','Kai','Lewis','Miles','Nathan','Owen','Patrick','Rhys','Sean','Tyler','Will','Zach','Aaron','Bobby','Connor','Dominic','Evan','Freddie','Gabriel','Henry','Joel','Kieran','Liam','Morgan','Nico','Riley','Tariq','Victor','Yusuf'];
 const last=['Ainsworth','Blackwell','Carrington','Drummond','Edwards','Fielding','Grayson','Hartley','Ingram','Jennings','Kendall','Lennox','Morton','Norwood','Oakley','Prescott','Quinn','Radcliffe','Sinclair','Thornley','Underwood','Vickers','Weston','Yates','Baxter','Dalton','Emerson','Faulkner','Gibson','Hewitt','Jackson','Keating','Langley','Monroe','Neville','Osborne','Preston','Redfern','Stafford','Townsend'];

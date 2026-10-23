@@ -1,6 +1,7 @@
+import {newCareer} from './testCareer';
 import {describe,it,expect} from 'vitest';
 import 'fake-indexeddb/auto';
-import {newCareer,schedule,playRound,table,transact} from './engine';
+import {schedule,playRound,table,transact} from './engine';
 import {saveCareer,loadCareer} from './storage';
 describe('vertical slice',()=>{
 it('schedules 22 clubs home and away over 42 rounds',()=>{const fs=schedule();expect(fs).toHaveLength(462);for(let r=0;r<42;r++){const round=fs.filter(f=>f.round===r);expect(new Set(round.flatMap(f=>[f.home,f.away])).size).toBe(22)}for(let a=0;a<22;a++)for(let b=0;b<22;b++)if(a!==b)expect(fs.filter(f=>f.home===a&&f.away===b)).toHaveLength(1)});

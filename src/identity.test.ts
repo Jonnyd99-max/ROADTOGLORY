@@ -1,6 +1,7 @@
+import {newCareer} from './testCareer';
 import {it,expect} from 'vitest';
 import 'fake-indexeddb/auto';
-import {newCareer,migrateCareer,markAllMailRead,unreadCount,playRound,type Career} from './engine';
+import {migrateCareer,markAllMailRead,unreadCount,playRound,type Career} from './engine';
 import {clubIdentity,defaultIdentity,updateIdentity,type ClubIdentity} from './identity';
 import {saveCareer,loadCareer} from './storage';
 import {monthlyMarket} from './market';

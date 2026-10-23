@@ -1,6 +1,7 @@
+import {newCareer,nextSeason} from './testCareer';
 import {it,expect} from 'vitest';
 import 'fake-indexeddb/auto';
-import {newCareer,migrateCareer,nextSeason,assistantPick,validTeam,playRound,renew} from './engine';
+import {migrateCareer,assistantPick,validTeam,playRound,renew} from './engine';
 import {ensureSeasonMarkets,signFreeAgent,borrowPlayer,endIncomingLoan} from './seasonMarket';
 import {refreshMarket,sellPlayer,loanPlayer} from './market';
 import {saveCareer,loadCareer} from './storage';

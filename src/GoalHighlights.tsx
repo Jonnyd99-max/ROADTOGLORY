@@ -3,7 +3,7 @@ import {useEffect,useState} from 'react';
 import {clubById,type Career,type Fixture} from './engine';
 import {dotPosition,replayBall,replayPlayer,replayVariant,replayScenes} from './highlights';
 import {beginPlayback,playbackGoals,tickPlayback,playbackScore,commentaryLine,SHOT_TIME} from './matchPlayback';
-export function GoalReplayButton({career,fixture}:{career:Career;fixture:Fixture}){const [open,setOpen]=useState(false);if(!fixture.goals?.length)return null;return <><button className="secondary" onClick={()=>setOpen(true)}>Watch goal highlights</button>{open&&<GoalHighlights career={career} fixture={fixture} to={career.activeMatch?.minute??90} onClose={()=>setOpen(false)}/>}</>}
+export function GoalReplayButton({career,fixture}:{career:Career;fixture:Fixture}){const [open,setOpen]=useState(false);if(!fixture.goals?.length)return null;return <><button className="secondary" onClick={()=>setOpen(true)}>Watch goal highlights</button>{open&&<GoalHighlights career={career} fixture={fixture} to={career.activeMatch?.minute??fixture.duration??90} onClose={()=>setOpen(false)}/>}</>}
 export function GoalHighlights({career:g,fixture:f,onClose,from=0,to=90}:{career:Career;fixture:Fixture;onClose:()=>void;from?:number;to?:number}){
  const [state,setState]=useState(()=>beginPlayback(from)),[playing,setPlaying]=useState(true),[reduced]=useState(()=>window.matchMedia('(prefers-reduced-motion: reduce)').matches);
  const goals=playbackGoals(f,from,to),goal=state.phase==='goal'?goals[state.nextGoal]:undefined,time=goal?Math.min(5.2,state.elapsed/SHOT_TIME*5.2):0,scoringHome=goal?.teamId===f.home,goalMoment=!!goal&&state.elapsed>=SHOT_TIME;

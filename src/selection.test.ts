@@ -1,5 +1,6 @@
+import {newCareer} from './testCareer';
 import {it,expect} from 'vitest';
-import {newCareer,orderedSquad,assistantPick,validTeam,positionOrder,signPlayer} from './engine';
+import {orderedSquad,assistantPick,validTeam,positionOrder,signPlayer} from './engine';
 it('groups a new signing with his position and orders by current ability',()=>{
  const initial=newCareer(),p=initial.market[0],g=signPlayer(initial,p.id,p.ability*110,p.wage,2),snapshot=structuredClone(g.squad);
  const sorted=orderedSquad(g.squad);expect(g.squad).toEqual(snapshot);

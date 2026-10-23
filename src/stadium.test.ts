@@ -1,6 +1,7 @@
+import {newCareer} from './testCareer';
 import {it,expect} from 'vitest';
 import 'fake-indexeddb/auto';
-import {newCareer,playRound} from './engine';
+import {playRound} from './engine';
 import {stadiumStands,stadiumCapacity,standQuote,upgradeStand,weeklyUpkeep,clubRunningCosts} from './club';
 import {saveCareer,loadCareer} from './storage';
 it('preserves all old paid capacities and maintenance without charging migration',async()=>{for(const [level,total] of [1200,1450,1950,2750,4000,5500].entries()){const g=newCareer();g.club!.facilities.stadium=level;expect(stadiumCapacity(g)).toBe(total);expect(stadiumStands(g)).toHaveLength(4);expect(g.cash).toBe(75000);expect(g.ledger).toHaveLength(0);await saveCareer(g,'old-stadium');const loaded=(await loadCareer('old-stadium'))!;expect(stadiumCapacity(loaded)).toBe(total);expect(weeklyUpkeep(loaded)).toBe(weeklyUpkeep(g))}});

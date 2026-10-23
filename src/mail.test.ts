@@ -1,5 +1,6 @@
+import {newCareer} from './testCareer';
 import {it,expect} from 'vitest';
-import {newCareer,playRound,markMailRead,unreadCount,mailId} from './engine';
+import {playRound,markMailRead,unreadCount,mailId} from './engine';
 import {startMatch,playHalf,finishMatch} from './match';
 import {inboxThreads} from './mail';
 it('produces one routine digest per matchweek while preserving all staff reports',()=>{const before=markMailRead(newCareer(),0),after=playRound(before);expect(after.inbox.length).toBe(before.inbox.length+1);expect(after.inbox[0]).toContain('Weekly digest');expect(after.inbox[0]).toContain('Assistant match report');expect(after.inbox[0]).toContain('Club & commercial report');expect(after.readMailIds).toEqual([0]);expect(unreadCount(after)).toBe(1);expect(mailId(after,after.inbox.length-1)).toBe(0)});

@@ -1,6 +1,7 @@
+import {newCareer} from './testCareer';
 import {it,expect} from 'vitest';
 import 'fake-indexeddb/auto';
-import {newCareer,signPlayer,renew} from './engine';
+import {signPlayer,renew} from './engine';
 import {signFreeAgent} from './seasonMarket';
 import {wageQuote,perks,type Perk} from './negotiation';
 import {saveCareer,loadCareer} from './storage';
